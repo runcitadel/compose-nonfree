@@ -39,6 +39,7 @@ services:
       CACHE_DIR: /backend/cache
       MEMPOOL_CLEAR_PROTECTION_MINUTES: '20'
     volumes:
+    - ${BITCOIN_DATA_DIR}:/bitcoin:ro
     - ${APP_DATA_DIR}/data:/backend/cache
     networks:
       default:

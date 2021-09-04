@@ -21,6 +21,8 @@ services:
       BTCEXP_BASIC_AUTH_PASSWORD: ''
     restart: on-failure
     stop_grace_period: 1m
+    volumes:
+    - ${BITCOIN_DATA_DIR}:/bitcoin:ro
     networks:
       default:
         ipv4_address: $APP_BTC_RPC_EXPLORER_IP

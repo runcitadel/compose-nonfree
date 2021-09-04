@@ -17,6 +17,7 @@ services:
       BTC_RPC_PORT: $BITCOIN_RPC_PORT
       BTC_RPC_PROTOCOL: http
     volumes:
+    - ${BITCOIN_DATA_DIR}:/bitcoin:ro
     - ${APP_DATA_DIR}/data:/data
     networks:
       default:

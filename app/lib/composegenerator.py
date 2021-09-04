@@ -81,7 +81,10 @@ def permissions():
                 "BITCOIN_ZMQ_RAWBLOCK_PORT":  "${BITCOIN_ZMQ_RAWBLOCK_PORT}",
                 "BITCOIN_ZMQ_RAWTX_PORT":     "${BITCOIN_ZMQ_RAWTX_PORT}",
                 "BITCOIN_ZMQ_HASHBLOCK_PORT": "${BITCOIN_ZMQ_HASHBLOCK_PORT}",
-            }
+            },
+            "volumes": [
+                "${BITCOIN_DATA_DIR}:/bitcoin:ro"
+            ]
         },
         "electrum": {
             "environment_allow": {

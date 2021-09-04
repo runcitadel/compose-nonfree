@@ -19,6 +19,7 @@ services:
       SWAP_MACAROON_PATH: /loop/.loop/$BITCOIN_NETWORK
     volumes:
     - ${LND_DATA_DIR}:/lnd:ro
+    - ${BITCOIN_DATA_DIR}:/bitcoin:ro
     - ${APP_DATA_DIR}/loop:/loop
     - ${APP_DATA_DIR}/rtl:/data
     networks:

@@ -66,6 +66,8 @@ services:
       INDEXER_BATCH_SUPPORT: inactive
     depends_on:
     - db
+    volumes:
+    - ${BITCOIN_DATA_DIR}:/bitcoin:ro
     networks:
       default:
         ipv4_address: $APP_SAMOURAI_SERVER_NODE_IP
