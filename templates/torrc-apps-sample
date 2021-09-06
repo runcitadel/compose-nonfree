@@ -1,3 +1,7 @@
+# Warning: it's not recommended to modify these files directly. Any
+# modifications you make can break the functionality of your node. These files
+# are automatically reset with every update.
+
 # Apps
 
 # btc-rpc-explorer Hidden Service
