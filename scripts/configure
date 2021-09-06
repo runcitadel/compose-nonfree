@@ -116,6 +116,18 @@ else:
   TOR_HASHED_PASSWORD=os.popen('docker run --rm lncm/tor:0.4.5.7 --quiet --hash-password "{}"'.format(TOR_PASSWORD)).read()[:-1]
 
 BITCOIN_NODE="neutrino"
+ALIAS_AND_COLOR=""
+
+if os.path.isfile("./lnd/lnd.conf"):
+  with open("./lnd/lnd.conf", 'r') as file:
+    for line in file:
+      if line.startswith("bitcoin.node="):
+        BITCOIN_NODE = line.split("=")[1].strip()
+      if line.startswith("alias="):
+        ALIAS_AND_COLOR += "\n" + line.strip()
+      if line.startswith("color="):
+        ALIAS_AND_COLOR += "\n" + line.strip()
+
 NEUTRINO_PEERS=""
 if BITCOIN_NETWORK == "mainnet":
   BITCOIN_RPC_PORT=8332
@@ -231,7 +243,7 @@ DOCKER_BINARY=subprocess.check_output(["readlink",  "-f", DOCKER_EXECUTABLE]).de
 # Set LND fee URL for neutrino on mainnet
 LND_FEE_URL=""
 # If the network is mainnet and status_dir/node-status-bitcoind-ready doesn't exist, set the FEE_URL
-if BITCOIN_NETWORK == 'mainnet' and not os.path.isfile(status_dir+'/node-status-bitcoind-ready'):
+if BITCOIN_NETWORK == 'mainnet' and BITCOIN_NODE == 'neutrino':
    LND_FEE_URL="feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json"
 
 # Checks if a variable with the name exists, if not, check if an env var with the name existts
@@ -276,6 +288,7 @@ print()
 for template_path, output_path in templates_to_build.items():
   with open(output_path, 'w') as file:
     file.write(replace_vars(template_path))
+      
 
 print("Pulling Docker images")
 print()
