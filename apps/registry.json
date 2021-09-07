@@ -196,12 +196,12 @@
             "3.jpg"
         ],
         "id": "samourai-server",
-        "name": "Samourai Server (Broken)",
+        "name": "Samourai Server",
         "path": "",
         "port": 3005,
         "repo": "https://github.com/louneskmt/umbrel-samourai-dojo/tree/v1.10.1-umbrel",
         "support": "https://t.me/SamouraiWallet",
-        "tagline": "We're sorry, but Samourai isn't working right now because of a bug in Umbrel and Citadel.",
+        "tagline": "Your private backing server for Samourai Wallet.",
         "version": "1.10.1",
         "website": "https://samouraiwallet.com"
     },

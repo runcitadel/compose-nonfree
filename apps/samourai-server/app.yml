@@ -1,11 +1,11 @@
 metadata:
   id: samourai-server
   category: Wallet Servers
-  name: Samourai Server (Broken)
+  name: Samourai Server
   version: 1.10.1
-  tagline: We're sorry, but Samourai isn't working right now because of a bug in Umbrel
-    and Citadel.
-  description: 'Samourai Server is an exclusive Umbrel app that runs Samourai Dojo
+  tagline: Your private backing server for Samourai Wallet.
+  description: >-
+    Samourai Server is an exclusive Umbrel app that runs Samourai Dojo
     and Whirlpool backing servers, and provides you easy step-by-step instructions
     to connect your Samourai Wallet to them. Samourai Wallet is unrivaled in transaction
     privacy, but its default configuration is still subject to network level privacy
@@ -18,7 +18,7 @@ metadata:
     any complexity.
 
 
-    Bundles Whirlpool CLI v0.10.11.'
+    Bundles Whirlpool CLI v0.10.11.
   developer: Samourai
   website: https://samouraiwallet.com
   dependencies:
@@ -52,7 +52,7 @@ containers:
   ip: $APP_SAMOURAI_SERVER_DB_IP
 - image: louneskmt/dojo-nodejs:1.10.1@sha256:d1460df18df091837718fcd0a6d3850e2f1a4a49da5914a697648c40d5477184
   init: true
-  command: /home/node/app/wait-for-it.sh db:3306 --timeout=720 --strict -- /home/node/app/restart.sh
+  command: /home/node/app/wait-for-it.sh ${APP_SAMOURAI_SERVER_DB_IP}:3306 --timeout=720 --strict -- /home/node/app/restart.sh
   user: 1000:1000
   environment:
     COMMON_BTC_NETWORK: $BITCOIN_NETWORK

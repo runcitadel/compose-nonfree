@@ -195,6 +195,16 @@ rsync --archive \
     "$UMBREL_ROOT"/.umbrel-"$RELEASE"/ \
     "$UMBREL_ROOT"/
 
+
+# Handle updating mysql conf for samourai-server app
+samourai_app_mysql_conf="${UMBREL_ROOT}/apps/samourai-server/mysql/mysql-dojo.cnf"
+samourai_data_mysql_conf="${UMBREL_ROOT}/app-data/samourai-server/mysql/mysql-dojo.cnf"
+if [[ -f "${samourai_app_mysql_conf}" ]] && [[ -f "${samourai_data_mysql_conf}" ]]; then
+  echo "Found samourai-server install, attempting to update DB configuration..."
+  cp "${samourai_app_mysql_conf}" "${samourai_data_mysql_conf}"
+fi
+
+
 # Handle updating static assets for samourai-server app
 samourai_app_dir="${UMBREL_ROOT}/apps/samourai-server/nginx"
 samourai_data_dir="${UMBREL_ROOT}/app-data/samourai-server/nginx"
