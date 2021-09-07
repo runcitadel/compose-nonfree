@@ -2,8 +2,6 @@ version: '3.7'
 services:
   web:
     image: runcitadel/btc-rpc-explorer:v3.2.0@sha256:fabece1bbcf0ceebf4147a905407a8e952dc7a04f148a511375ed4d32915bf5e
-    ports:
-    - $APP_BTC_RPC_EXPLORER_PORT:$APP_BTC_RPC_EXPLORER_PORT
     environment:
       BTCEXP_HOST: 0.0.0.0
       BTCEXP_BITCOIND_HOST: $BITCOIN_IP
@@ -21,8 +19,10 @@ services:
       BTCEXP_BASIC_AUTH_PASSWORD: ''
     volumes:
     - ${BITCOIN_DATA_DIR}:/bitcoin:ro
+    ports:
+    - ${APP_BTC_RPC_EXPLORER_WEB_PORT}:3002
     networks:
       default:
-        ipv4_address: $APP_BTC_RPC_EXPLORER_IP
+        ipv4_address: $APP_BTC_RPC_EXPLORER_WEB_IP
     stop_grace_period: 1m
     restart: on-failure

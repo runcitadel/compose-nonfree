@@ -1,4 +1,3 @@
-
 from lib.citadelutils import parse_dotenv
 import json
 from os import path
@@ -46,6 +45,10 @@ def assignIp(container: dict, appId: str, networkingFile: str, envFile: str):
                 break
     container['networks'] = {'default': {
         'ipv4_address': "$" + env_var}}
+    dotEnv = parse_dotenv(envFile)
+    if(env_var in dotEnv and str(dotEnv[env_var]) == str(ip)):
+        return container
+
     # Now append a new line  with APP_{app_name}_{container_name}_IP=${IP} to the envFile
     with open(envFile, 'a') as f:
         f.write("{}={}\n".format(env_var, ip))
@@ -67,6 +70,10 @@ def assignPort(container: dict, appId: str, networkingFile: str, envFile: str):
     )
 
     port = getFreePort(networkingFile, appId)
+
+    dotEnv = parse_dotenv(envFile)
+    if(env_var in dotEnv and str(dotEnv[env_var]) == str(port)):
+        return {"port": port, "env_var": "${{{}}}".format(env_var)}
 
     # Now append a new line  with APP_{app_name}_{container_name}_PORT=${PORT} to the envFile
     with open(envFile, 'a') as f:
@@ -90,32 +97,28 @@ def configureMainNetworking(app: dict, nodeRoot: str):
         return app
 
     dotEnv = parse_dotenv(path.join(nodeRoot, ".env"))
-    containerPort = ""
-    portAsEnvVar = False
 
     for container in app['containers']:
         if(container['name'] == app['metadata']['mainContainer']):
-            if("port" in app['metadata']):
-                containerPort = app['metadata']['port']
+            portDetails = assignPort(container, app['metadata']['id'], path.join(
+                nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
+            containerPort = portDetails['port']
+            portAsEnvVar = portDetails['env_var']
+            portToAppend = portAsEnvVar
+            if("port" in container):
+                portToAppend = "{}:{}".format(portAsEnvVar, container['port'])
+                del container['port']
+
+            if("ports" in container):
+                container['ports'].append(portToAppend)
             else:
-                portDetails = assignPort(container, app['metadata']['id'], path.join(
-                    nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
-                containerPort = portDetails['port']
-                portAsEnvVar = portDetails['env_var']
-
-            if portAsEnvVar:
-                portToAppend = portAsEnvVar
-                if("port" in container):
-                    portToAppend = "{}:{}".format(portAsEnvVar, container['port'])
-                    del container['port']
-
-                if("ports" in container):
-                    container['ports'].append(portToAppend)
-                else:
-                    container['ports'] = [portToAppend]
+                container['ports'] = [portToAppend]
 
             container = assignIp(container, app['metadata']['id'], path.join(
                 nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
+
+            # If the IP wasn't in dotenv before, now it should be
+            dotEnv = parse_dotenv(path.join(nodeRoot, ".env"))
 
             containerIP = dotEnv['APP_{}_{}_IP'.format(app['metadata']['id'].upper().replace(
                 "-", "_"), app['metadata']['mainContainer'].upper().replace("-", "_"))]
@@ -123,17 +126,21 @@ def configureMainNetworking(app: dict, nodeRoot: str):
             hiddenservice = getHiddenService(
                 app['metadata']['name'], app['metadata']['id'], containerIP, containerPort)
 
-            with open(path.join(nodeRoot, "tor", "torrc-apps-2"), 'a') as f:
+            torFileToAppend = ["torrc-apps", "torrc-apps-2"][random.randint(0,1)]
+            with open(path.join(nodeRoot, "tor", torFileToAppend), 'a') as f:
                 f.write(hiddenservice)
+            
+            # Also set the port in metadata
+            app['metadata']['port'] = containerPort
             break
 
     for registryApp in registry:
         if(registryApp['id'] == app['metadata']['id']):
-            registryApp = app
+            registry[registry.index(registryApp)] = app['metadata']
             break
 
     with open(registryFile, 'w') as f:
-        json.dump(registry, f)
+        json.dump(registry, f, indent=4, sort_keys=True)
 
 
     return app

@@ -62,6 +62,13 @@ def composeToAppYml(app):
 
 def update():
     apps = findAndValidateApps(appsDir)
+    # The compose generation process updates the registry, so we need to get it set up with the basics befor that
+    registry = getAppRegistry(apps, appsDir)
+    # Write the registry to ../apps/registry.json
+    with open(os.path.join(appsDir, "registry.json"), "w") as f:
+        json.dump(registry, f, indent=4, sort_keys=True)
+    print("Wrote registry to registry.json")
+    
     # Loop through the apps and generate valid compose files from them, then put these into the app dir
     for app in apps:
         composeFile = os.path.join(appsDir, app, "docker-compose.yml")
@@ -71,12 +78,6 @@ def update():
             if(appCompose):
                 f.write(yaml.dump(getApp(appYml), sort_keys=False))
     print("Generated configuration successfully")
-
-    registry = getAppRegistry(apps, appsDir)
-    # Write the registry to ../apps/registry.json
-    with open(os.path.join(appsDir, "registry.json"), "w") as f:
-        json.dump(registry, f, indent=4, sort_keys=True)
-    print("Wrote registry to registry.json")
 
 def download():
     if(args.app is None):

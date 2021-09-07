@@ -10,10 +10,10 @@ def getFreePort(networkingFile: str, appId: str):
     if(os.path.isfile(networkingFile)):
         with open(networkingFile, 'r') as f:
             networkingData = json.load(f)
-            if('ports' in networkingData):
-                usedPorts += list(networkingData['ports'].values())
-            else:
-                networkingData['ports'] = {}
+    if('ports' in networkingData):
+        usedPorts += list(networkingData['ports'].values())
+    else:
+        networkingData['ports'] = {}
     
     if(appId in networkingData['ports']):
         return networkingData['ports'][appId]

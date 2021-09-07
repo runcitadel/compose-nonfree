@@ -1,3 +1,5 @@
+version: 0
+
 metadata:
   id: btc-rpc-explorer
   category: Explorers
@@ -15,7 +17,7 @@ metadata:
     summary, with fee, size, and age breakdowns. You can also search by transaction
     ID, block hash/height, and addresses.
 
-
+    
     It's time to appreciate the "fullness" of your node.
   developer: Dan Janosik
   website: https://explorer.btc21.org
@@ -23,34 +25,32 @@ metadata:
   - electrum
   - bitcoind
   repo: https://github.com/janoside/btc-rpc-explorer
-  support: https://github.com/janoside/btc-rpc-explorer/discussions
-  port: 3002
+  support: https://github.com/janoside/btc-rpc-explorer/discussionsa
   gallery:
   - 1.jpg
   - 2.jpg
   - 3.jpg
+  mainContainer: web
 
 containers:
-- name: web
-  image: runcitadel/btc-rpc-explorer:v3.2.0@sha256:fabece1bbcf0ceebf4147a905407a8e952dc7a04f148a511375ed4d32915bf5e
-  permissions:
-  - electrum
-  - bitcoind
-  ip: $APP_BTC_RPC_EXPLORER_IP
-  ports:
-  - $APP_BTC_RPC_EXPLORER_PORT:$APP_BTC_RPC_EXPLORER_PORT
-  environment:
-    BTCEXP_HOST: 0.0.0.0
-    BTCEXP_BITCOIND_HOST: $BITCOIN_IP
-    BTCEXP_BITCOIND_PORT: $BITCOIN_RPC_PORT
-    BTCEXP_BITCOIND_USER: $BITCOIN_RPC_USER
-    BTCEXP_BITCOIND_PASS: $BITCOIN_RPC_PASS
-    BTCEXP_ADDRESS_API: electrum
-    BTCEXP_ELECTRUM_SERVERS: tcp://$ELECTRUM_IP:$ELECTRUM_PORT
-    DEBUG: btcexp:*,electrumClient
-    BTCEXP_SLOW_DEVICE_MODE: 'true'
-    BTCEXP_NO_INMEMORY_RPC_CACHE: 'true'
-    BTCEXP_PRIVACY_MODE: 'true'
-    BTCEXP_NO_RATES: 'true'
-    BTCEXP_RPC_ALLOWALL: 'false'
-    BTCEXP_BASIC_AUTH_PASSWORD: ''
+  - name: web
+    image: runcitadel/btc-rpc-explorer:v3.2.0@sha256:fabece1bbcf0ceebf4147a905407a8e952dc7a04f148a511375ed4d32915bf5e
+    permissions:
+    - electrum
+    - bitcoind
+    port: 3002
+    environment:
+      BTCEXP_HOST: 0.0.0.0
+      BTCEXP_BITCOIND_HOST: $BITCOIN_IP
+      BTCEXP_BITCOIND_PORT: $BITCOIN_RPC_PORT
+      BTCEXP_BITCOIND_USER: $BITCOIN_RPC_USER
+      BTCEXP_BITCOIND_PASS: $BITCOIN_RPC_PASS
+      BTCEXP_ADDRESS_API: electrum
+      BTCEXP_ELECTRUM_SERVERS: tcp://$ELECTRUM_IP:$ELECTRUM_PORT
+      DEBUG: btcexp:*,electrumClient
+      BTCEXP_SLOW_DEVICE_MODE: 'true'
+      BTCEXP_NO_INMEMORY_RPC_CACHE: 'true'
+      BTCEXP_PRIVACY_MODE: 'true'
+      BTCEXP_NO_RATES: 'true'
+      BTCEXP_RPC_ALLOWALL: 'false'
+      BTCEXP_BASIC_AUTH_PASSWORD: ''

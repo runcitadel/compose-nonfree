@@ -55,7 +55,7 @@ def convertIpToNetwork(app: dict, networkingFile: str, envFile: str):
         elif 'assignip' in container:
             if(container['assignip'] != 'False'):
                 container = assignIp(
-                    container, app['metadata']['ip'], networkingFile, envFile)
+                    container, app['metadata']['id'], networkingFile, envFile)
             del container['assignip']
 
     return app

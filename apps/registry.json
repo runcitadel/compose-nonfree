@@ -207,7 +207,6 @@
     },
     {
         "category": "Explorers",
-        "defaultPassword": "",
         "dependencies": [
             "electrum",
             "bitcoind"
@@ -220,11 +219,11 @@
             "3.jpg"
         ],
         "id": "btc-rpc-explorer",
+        "mainContainer": "web",
         "name": "BTC RPC Explorer",
-        "path": "",
-        "port": 3002,
+        "port": "44209",
         "repo": "https://github.com/janoside/btc-rpc-explorer",
-        "support": "https://github.com/janoside/btc-rpc-explorer/discussions",
+        "support": "https://github.com/janoside/btc-rpc-explorer/discussionsa",
         "tagline": "Simple, database-free blockchain explorer",
         "version": "3.2.0",
         "website": "https://explorer.btc21.org"
@@ -319,7 +318,6 @@
     },
     {
         "category": "Wallet Servers",
-        "defaultPassword": "",
         "dependencies": [
             "lnd"
         ],
@@ -333,7 +331,7 @@
         "id": "bluewallet",
         "mainContainer": "lndhub",
         "name": "BlueWallet Lightning",
-        "path": "",
+        "port": "18285",
         "repo": "https://github.com/BlueWallet/LndHub",
         "support": "https://t.me/bluewallet",
         "tagline": "Connect BlueWallet to your Lightning node",

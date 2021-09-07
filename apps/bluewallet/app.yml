@@ -32,7 +32,7 @@ containers:
   command: redis-server --requirepass moneyprintergobrrr
   data:
   - data/redis:/data
-  ip: ${APP_BLUEWALLET_REDIS_IP}
+  assignip: true
   user: 1000:1000
   init: true
 
