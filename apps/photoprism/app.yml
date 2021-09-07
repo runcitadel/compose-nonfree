@@ -37,8 +37,6 @@ metadata:
 containers:
 - image: photoprism/photoprism:preview@sha256:7fd6df5b78270d01299c1ce7dd8d4dc4de76540323a7c84f13e39cd48b12eac5
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   ports:
   - ${APP_PHOTOPRISM_PORT}:${APP_PHOTOPRISM_PORT}
   environment:
@@ -63,8 +61,6 @@ containers:
   ip: ${APP_PHOTOPRISM_IP}
 - image: mariadb:10.6.4@sha256:4bbee12b1adf299211f844ebbe89563675c46965470dcfa40f5278d63c56d030
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   command: mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4
     --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF
     --innodb-lock-wait-timeout=50

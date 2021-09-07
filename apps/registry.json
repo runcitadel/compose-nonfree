@@ -331,9 +331,9 @@
             "3.jpg"
         ],
         "id": "bluewallet",
+        "mainContainer": "lndhub",
         "name": "BlueWallet Lightning",
         "path": "",
-        "port": 3008,
         "repo": "https://github.com/BlueWallet/LndHub",
         "support": "https://t.me/bluewallet",
         "tagline": "Connect BlueWallet to your Lightning node",

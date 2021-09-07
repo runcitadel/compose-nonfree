@@ -37,8 +37,6 @@ containers:
 - name: nbxplorer
   image: nicolasdorier/nbxplorer:2.2.5@sha256:2e6464de3ac4b2496491319bd25e6b9a43604db0c02fb4b9d9899f6170f61b5e
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   environment:
     NBXPLORER_DATADIR: /data
     NBXPLORER_NETWORK: $BITCOIN_NETWORK
@@ -85,14 +83,10 @@ containers:
   - lnd
   ip: $APP_BTCPAY_SERVER_IP
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
 
 - name: postgres
   image: postgres:9.6.20@sha256:82c335ccb6b60941cb860cbb8252c12f63fd3e27a0d15bce5bc6de110c02a2b4
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   environment:
     POSTGRES_HOST_AUTH_METHOD: trust
   data:

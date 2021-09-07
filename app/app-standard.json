@@ -4,6 +4,10 @@
   "description": "An app for citadel",
   "type": "object",
   "properties": {
+    "version": {
+      "type": ["string", "number"],
+      "description": "The version of the app.yml format you're using."
+    },
     "metadata": {
       "type": "object",
       "properties": {
@@ -76,6 +80,10 @@
         "torOnly": {
           "description": "Whether the app is only available over tor",
           "type": "boolean"
+        },
+        "mainContainer": {
+          "type": "string",
+          "description": "The name of the main container for the app. If set, IP, port, and hidden service will be assigned to it automatically."
         }
       },
       "required": [
@@ -88,7 +96,6 @@
         "website",
         "repo",
         "support",
-        "port",
         "gallery"
       ],
       "additionalProperties": false
@@ -117,6 +124,10 @@
               "type": [ "string", "number" ]
             }
           },
+          "port": {
+            "type": "number",
+            "description": "If this is the min container, the port inside the container which will be exposed to the outside as the port specified in metadata."
+          },
           "environment": {
             "type": [ "object", "array" ]
           },
@@ -139,13 +150,9 @@
             "type": "string",
             "description": "The user the container should run as"
           },
-          "restart": {
-            "type": "string",
-            "description": "The restart policy for the container"
-          },
           "stop_grace_period": {
             "type": "string",
-            "description": "The grace period for stopping the container"
+            "description": "The grace period for stopping the container. Defaults to 1 minute."
           },
           "depends_on": {
             "type": "array",

@@ -51,8 +51,6 @@ containers:
 - image: mempool/frontend:v2.2.1@sha256:6c87505b89cce1bb3dd99ff2d59cfac5ff2b78136a0f17fe5c37c3f832b9aff6
   user: 1000:1000
   init: true
-  restart: on-failure
-  stop_grace_period: 1m
   command: ./wait-for mariadb:3306 --timeout=720 -- nginx -g 'daemon off;'
   ports:
   - ${APP_MEMPOOL_PORT}:${APP_MEMPOOL_PORT}
@@ -64,8 +62,6 @@ containers:
 - image: mempool/backend:v2.2.1@sha256:175f33ab2e96319c2730c020f28207cef9d1f4cb330eab4f40fa4721d01fa272
   user: 1000:1000
   init: true
-  restart: on-failure
-  stop_grace_period: 1m
   command: ./wait-for-it.sh mariadb:3306 --timeout=720 --strict -- ./start.sh
   environment:
     RPC_HOST: $BITCOIN_IP
@@ -92,8 +88,6 @@ containers:
   ip: $APP_MEMPOOL_API_IP
 - image: mariadb:10.5.8@sha256:8040983db146f729749081c6b216a19d52e0973134e2e34c0b4fd87f48bc15b0
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   environment:
     MYSQL_DATABASE: mempool
     MYSQL_USER: mempool

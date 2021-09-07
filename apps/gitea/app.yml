@@ -43,7 +43,6 @@ metadata:
 containers:
 - image: gitea/gitea:1.15.2-rootless@sha256:6caabcf0e1a21a2d885f44c8f19693ce44ec3d443e2116f86a2937db453566a8
   user: 1000:1000
-  restart: on-failure
   ports:
   - ${APP_GITEA_PORT}:${APP_GITEA_PORT}
   - ${APP_GITEA_SSH_PORT}:${APP_GITEA_SSH_PORT}
@@ -67,7 +66,6 @@ containers:
   ip: $APP_GITEA_IP
 - image: mariadb:10.6.4@sha256:4bbee12b1adf299211f844ebbe89563675c46965470dcfa40f5278d63c56d030
   user: 1000:1000
-  restart: on-failure
   environment:
     MYSQL_ROOT_PASSWORD: gitea
     MYSQL_USER: gitea

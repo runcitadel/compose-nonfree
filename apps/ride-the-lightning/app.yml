@@ -46,8 +46,6 @@ metadata:
 containers:
 - image: shahanafarooqui/rtl:0.11.2@sha256:225b47abcca053e3ea831431742a08b3f3e70b12654df6fd703f617ad965f34e
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   ports:
   - $APP_RIDE_THE_LIGHTNING_PORT:$APP_RIDE_THE_LIGHTNING_PORT
   environment:
@@ -70,8 +68,6 @@ containers:
   ip: $APP_RIDE_THE_LIGHTNING_IP
 - image: runcitadel/loop:v0.15.0-beta@sha256:40561eed1de740eba99e4784703134a7d987c4c1f064d6759c449f56f34c7338
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   environment:
     HOME: /data
   command:

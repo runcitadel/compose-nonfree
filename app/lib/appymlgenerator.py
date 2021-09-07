@@ -111,5 +111,8 @@ def convertComposeYMLToAppYML(app: dict, name: str, registry: dict):
                 appMetadata['dependencies'].append(permission)
             appMetadata['dependencies'] = removeDuplicates(appMetadata['dependencies'])
         
+        if('restart' in container):
+            del container['restart']
+
     del app['version']
     return {"metadata": appMetadata, **app}

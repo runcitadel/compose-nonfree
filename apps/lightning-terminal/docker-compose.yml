@@ -3,8 +3,6 @@ services:
   web:
     image: lightninglabs/lightning-terminal:v0.5.0-alpha@sha256:1c9c59fe0316de5d64e89e205f91fb647660a865428daacfe582cb968fd42f87
     user: 1000:1000
-    restart: on-failure
-    stop_grace_period: 1m
     ports:
     - $APP_LIGHTNING_TERMINAL_PORT:$APP_LIGHTNING_TERMINAL_PORT
     environment:
@@ -22,3 +20,5 @@ services:
     networks:
       default:
         ipv4_address: $APP_LIGHTNING_TERMINAL_IP
+    stop_grace_period: 1m
+    restart: on-failure

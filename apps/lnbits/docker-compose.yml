@@ -4,8 +4,6 @@ services:
     image: lnbitsdocker/lnbits:3b9401e@sha256:083a7e2d7822bf1a8dd938019ebc044450d74a5b1a9af89dfa5fa695d24ec317
     user: 1000:1000
     init: true
-    restart: on-failure
-    stop_grace_period: 1m
     ports:
     - $APP_LNBITS_PORT:$APP_LNBITS_PORT
     environment:
@@ -25,3 +23,5 @@ services:
     networks:
       default:
         ipv4_address: $APP_LNBITS_IP
+    stop_grace_period: 1m
+    restart: on-failure

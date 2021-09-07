@@ -3,7 +3,6 @@ services:
   db:
     image: mariadb:10.6.4@sha256:4bbee12b1adf299211f844ebbe89563675c46965470dcfa40f5278d63c56d030
     init: true
-    restart: on-failure
     stop_grace_period: 5m
     user: 1000:1000
     environment:
@@ -19,10 +18,10 @@ services:
     networks:
       default:
         ipv4_address: $APP_SAMOURAI_SERVER_DB_IP
+    restart: on-failure
   node:
     image: louneskmt/dojo-nodejs:1.10.1@sha256:d1460df18df091837718fcd0a6d3850e2f1a4a49da5914a697648c40d5477184
     init: true
-    restart: on-failure
     command: /home/node/app/wait-for-it.sh db:3306 --timeout=720 --strict -- /home/node/app/restart.sh
     user: 1000:1000
     environment:
@@ -71,10 +70,11 @@ services:
     networks:
       default:
         ipv4_address: $APP_SAMOURAI_SERVER_NODE_IP
+    stop_grace_period: 1m
+    restart: on-failure
   whirlpool:
     image: louneskmt/whirlpool:0.10.11@sha256:a7cfb9e287aa5f2e4137a5d2fdddbfd348624e24e7dd7bed7fa0f4e2e22734d5
     init: true
-    restart: on-failure
     user: 1000:1000
     command:
     - --listen
@@ -98,10 +98,11 @@ services:
     networks:
       default:
         ipv4_address: $APP_SAMOURAI_SERVER_WHIRLPOOL_IP
+    stop_grace_period: 1m
+    restart: on-failure
   nginx:
     image: nginx:1.19-alpine@sha256:c2ce58e024275728b00a554ac25628af25c54782865b3487b11c21cafb7fabda
     init: true
-    restart: on-failure
     command: /bin/sh -c "envsubst < /var/www/connect/js/conf.template.js > /var/www/connect/js/conf.js
       && /wait-for node:8080 --timeout=720 -- nginx"
     environment:
@@ -126,3 +127,5 @@ services:
     networks:
       default:
         ipv4_address: $APP_SAMOURAI_SERVER_IP
+    stop_grace_period: 1m
+    restart: on-failure

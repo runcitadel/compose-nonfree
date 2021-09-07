@@ -1,0 +1,139 @@
+
+from lib.citadelutils import parse_dotenv
+import json
+from os import path
+import random
+from lib.composegenerator.v0.utils.networking import getFreePort, getHiddenService
+
+
+def assignIp(container: dict, appId: str, networkingFile: str, envFile: str):
+    # Strip leading/trailing whitespace from container['name']
+    container['name'] = container['name'].strip()
+    # If the name still contains a newline, throw an error
+    if(container['name'].find("\n") != -1):
+        raise Exception("Newline in container name")
+    env_var = "APP_{}_{}_IP".format(
+        appId.upper().replace("-", "_"),
+        container['name'].upper().replace("-", "_")
+    )
+    # Write a list of used IPs to the usedIpFile as JSON, and read that file to check if an IP
+    # can be used
+    usedIps = []
+    networkingData = {}
+    if(path.isfile(networkingFile)):
+        with open(networkingFile, 'r') as f:
+            networkingData = json.load(f)
+
+    if('ip_addresses' in networkingData):
+        usedIps = list(networkingData['ip_addresses'].values())
+    else:
+        networkingData['ip_addresses'] = {}
+    # An IP 10.21.21.xx, with x being a random number above 50 is asigned to the container
+    # If the IP is already in use, it will be tried again until it's not in use
+    # If it's not in use, it will be added to the usedIps list and written to the usedIpFile
+    # If the usedIpsFile contains all IPs between  10.21.21.50 and  10.21.21.255 (inclusive),
+    # Throw an error, because no more IPs can be used
+    if(len(usedIps) == 206):
+        raise Exception("No more IPs can be used")
+
+    if(appId in networkingData['ip_addresses']):
+        ip = networkingData['ip_addresses'][appId]
+    else:
+        while True:
+            ip = "10.21.21." + str(random.randint(50, 255))
+            if(ip not in usedIps):
+                networkingData['ip_addresses'][appId] = ip
+                break
+    container['networks'] = {'default': {
+        'ipv4_address': "$" + env_var}}
+    # Now append a new line  with APP_{app_name}_{container_name}_IP=${IP} to the envFile
+    with open(envFile, 'a') as f:
+        f.write("{}={}\n".format(env_var, ip))
+    with open(networkingFile, 'w') as f:
+        json.dump(networkingData, f)
+    return container
+
+
+def assignPort(container: dict, appId: str, networkingFile: str, envFile: str):
+    # Strip leading/trailing whitespace from container['name']
+    container['name'] = container['name'].strip()
+    # If the name still contains a newline, throw an error
+    if(container['name'].find("\n") != -1 or container['name'].find(" ") != -1):
+        raise Exception("Newline or space in container name")
+
+    env_var = "APP_{}_{}_PORT".format(
+        appId.upper().replace("-", "_"),
+        container['name'].upper().replace("-", "_")
+    )
+
+    port = getFreePort(networkingFile, appId)
+
+    # Now append a new line  with APP_{app_name}_{container_name}_PORT=${PORT} to the envFile
+    with open(envFile, 'a') as f:
+        f.write("{}={}\n".format(env_var, port))
+
+    # This is confusing, but {{}} is an escaped version of {} so it is ${{ {} }}
+    # where the outer {{ }} will be replaced by {} in the returned string
+    return {"port": port, "env_var": "${{{}}}".format(env_var)}
+
+
+def configureMainNetworking(app: dict, nodeRoot: str):
+    registryFile = path.join(nodeRoot, "apps", "registry.json")
+    registry: list = []
+    if(path.isfile(registryFile)):
+        with open(registryFile, 'r') as f:
+            registry = json.load(f)
+    else:
+        raise Exception("Registry file not found")
+
+    if not "mainContainer" in app['metadata']:
+        return app
+
+    dotEnv = parse_dotenv(path.join(nodeRoot, ".env"))
+    containerPort = ""
+    portAsEnvVar = False
+
+    for container in app['containers']:
+        if(container['name'] == app['metadata']['mainContainer']):
+            if("port" in app['metadata']):
+                containerPort = app['metadata']['port']
+            else:
+                portDetails = assignPort(container, app['metadata']['id'], path.join(
+                    nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
+                containerPort = portDetails['port']
+                portAsEnvVar = portDetails['env_var']
+
+            if portAsEnvVar:
+                portToAppend = portAsEnvVar
+                if("port" in container):
+                    portToAppend = "{}:{}".format(portAsEnvVar, container['port'])
+                    del container['port']
+
+                if("ports" in container):
+                    container['ports'].append(portToAppend)
+                else:
+                    container['ports'] = [portToAppend]
+
+            container = assignIp(container, app['metadata']['id'], path.join(
+                nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
+
+            containerIP = dotEnv['APP_{}_{}_IP'.format(app['metadata']['id'].upper().replace(
+                "-", "_"), app['metadata']['mainContainer'].upper().replace("-", "_"))]
+
+            hiddenservice = getHiddenService(
+                app['metadata']['name'], app['metadata']['id'], containerIP, containerPort)
+
+            with open(path.join(nodeRoot, "tor", "torrc-apps-2"), 'a') as f:
+                f.write(hiddenservice)
+            break
+
+    for registryApp in registry:
+        if(registryApp['id'] == app['metadata']['id']):
+            registryApp = app
+            break
+
+    with open(registryFile, 'w') as f:
+        json.dump(registry, f)
+
+
+    return app

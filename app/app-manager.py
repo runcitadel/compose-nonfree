@@ -2,7 +2,7 @@
 
 import yaml
 import json
-from lib.composegenerator import convertToDockerComposeYML
+from lib.generateDockerComposeYml import convertToDockerComposeYML
 from lib.appymlgenerator import convertComposeYMLToAppYML
 from lib.validate import findAndValidateApps, findApps
 from lib.metadata import getAppRegistry
@@ -67,7 +67,9 @@ def update():
         composeFile = os.path.join(appsDir, app, "docker-compose.yml")
         appYml = os.path.join(appsDir, app, "app.yml")
         with open(composeFile, "w") as f:
-            f.write(yaml.dump(getApp(appYml), sort_keys=False))
+            appCompose = getApp(appYml)
+            if(appCompose):
+                f.write(yaml.dump(getApp(appYml), sort_keys=False))
     print("Generated configuration successfully")
 
     registry = getAppRegistry(apps, appsDir)
@@ -98,7 +100,7 @@ def download():
 def getApp(app):
     with open(app, 'r') as f:
         app = yaml.safe_load(f)
-    return convertToDockerComposeYML(app, os.path.join(appsDir, "ips.json"), os.path.join(nodeRoot, ".env"))
+    return convertToDockerComposeYML(app, nodeRoot)
 
 def compose(app, arguments):
     # Runs a compose command in the app dir

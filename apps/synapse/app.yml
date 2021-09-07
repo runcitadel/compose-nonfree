@@ -44,8 +44,6 @@ metadata:
 containers:
 - image: matrixdotorg/synapse:v1.41.1@sha256:4a815afa1fc094d55a9e9a6436790de5dce97993d4165004dd5878f7247a81c3
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   ports:
   - $APP_SYNAPSE_PORT:$APP_SYNAPSE_PORT
   entrypoint: bash

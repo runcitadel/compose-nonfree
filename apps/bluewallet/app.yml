@@ -1,3 +1,5 @@
+version: 0
+
 metadata:
   id: bluewallet
   category: Wallet Servers
@@ -17,11 +19,11 @@ metadata:
   - lnd
   repo: https://github.com/BlueWallet/LndHub
   support: https://t.me/bluewallet
-  port: 3008
   gallery:
   - 1.jpg
   - 2.jpg
   - 3.jpg
+  mainContainer: lndhub
 
 
 containers:
@@ -32,19 +34,14 @@ containers:
   - data/redis:/data
   ip: ${APP_BLUEWALLET_REDIS_IP}
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   init: true
 
-
 - name: lndhub
-  image: bluewalletorganization/lndhub:v1.3.3@sha256:b99408dfb53f503def405668f5fc4d8185de39a87843d4ea8774544a5df1fe36
+  image: bluewalletorganization/lndhub:v1.3.5@sha256:bec3eb3509e6c90ba2cf9ac34ccd7294ea590461f2b4f08208417ea9273e9b05
   permissions:
   - lnd
   depends_on:
   - redis
-  ports:
-  - ${APP_BLUEWALLET_LNDHUB_PORT}:${APP_BLUEWALLET_LNDHUB_PORT}
   environment:
     PORT: ${APP_BLUEWALLET_LNDHUB_PORT}
     TOR_URL: ${APP_HIDDEN_SERVICE}
@@ -66,9 +63,6 @@ containers:
           "password": ""
         }
       }
-  ip: ${APP_BLUEWALLET_LNDHUB_IP}
   # Some stuff for the container to run securely & stop properly
   user: 1000:1000
-  restart: on-failure
-  stop_grace_period: 1m
   init: true
