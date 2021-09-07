@@ -15,6 +15,7 @@ services:
                     default:
                         ipv4_address: $TOR_PROXY_IP
         app_tor:
+                container_name: app_tor
                 image: lncm/tor:0.4.5.7@sha256:a83e0d9fd1a35adf025f2f34237ec1810e2a59765988dce1dfb222ca8ef6583c
                 user: toruser
                 restart: on-failure
@@ -25,6 +26,7 @@ services:
                     default:
                         ipv4_address: $APPS_TOR_IP
         app_2_tor:
+                container_name: app_2_tor
                 image: lncm/tor:0.4.5.7@sha256:a83e0d9fd1a35adf025f2f34237ec1810e2a59765988dce1dfb222ca8ef6583c
                 user: toruser
                 restart: on-failure
@@ -93,6 +95,7 @@ services:
                 image: runcitadel/manager:main@sha256:6325f8badbbec9da74878b27291d73c27e3a970ca860d13710b6caa892f06f0d
                 depends_on: [ tor ]
                 restart: on-failure
+                init: true
                 stop_grace_period: 5m30s
                 volumes:
                         - ${PWD}:${PWD}

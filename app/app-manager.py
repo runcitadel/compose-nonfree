@@ -19,6 +19,7 @@ appsDir = os.path.join(nodeRoot, "apps")
 
 parser = argparse.ArgumentParser(description="Manage apps on your Citadel")
 parser.add_argument('action', help='What to do with the app database either list, download, update or update-online. For development purposes, compose-to-app is also available')
+parser.add_argument('--invoked-by-configure', action='store_true')
 args = parser.parse_args()
 
 # Returns a list of every argument after the second one in sys.argv joined into a string by spaces
@@ -125,11 +126,27 @@ elif args.action == 'download':
     download()
     exit(0)     
 elif args.action == 'update':
-    update()
+    if(args.invoked_by_configure):
+        update()
+    else:
+        os.system(os.path.join(nodeRoot, "scripts", "configure"))
+        os.chdir(nodeRoot)
+        os.system("docker-compose stop app_tor")
+        os.system("docker-compose start app_tor")
+        os.system("docker-compose stop app_2_tor")
+        os.system("docker-compose start app_2_tor")
     exit(0)
 elif args.action == 'update-online':
     download()
-    update()
+    if(args.invoked_by_configure):
+        update()
+    else:
+        os.system(os.path.join(nodeRoot, "scripts", "configure"))
+        os.chdir(nodeRoot)
+        os.system("docker-compose stop app_tor")
+        os.system("docker-compose start app_tor")
+        os.system("docker-compose stop app_2_tor")
+        os.system("docker-compose start app_2_tor")
     exit(0)
 elif args.action == 'compose-to-app':
     apps = findApps(appsDir)

@@ -131,7 +131,7 @@ def configureMainNetworking(app: dict, nodeRoot: str):
                 f.write(hiddenservice)
             
             # Also set the port in metadata
-            app['metadata']['port'] = containerPort
+            app['metadata']['port'] = int(containerPort)
             break
 
     for registryApp in registry:

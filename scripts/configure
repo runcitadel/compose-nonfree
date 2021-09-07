@@ -238,7 +238,7 @@ DOCKER_BINARY=subprocess.check_output(["readlink",  "-f", DOCKER_EXECUTABLE]).de
 # Set LND fee URL for neutrino on mainnet
 LND_FEE_URL=""
 # If the network is mainnet and status_dir/node-status-bitcoind-ready doesn't exist, set the FEE_URL
-if BITCOIN_NETWORK == 'mainnet' and BITCOIN_NODE == 'neutrino':
+if BITCOIN_NETWORK  == 'mainnet' and BITCOIN_NODE == 'neutrino':
    LND_FEE_URL="feeurl=https://nodes.lightning.computer/fees/v1/btc-fee-estimates.json"
 
 # Checks if a variable with the name exists, if not, check if an env var with the name existts
@@ -291,7 +291,7 @@ print("This may take a while, please be patient...")
 os.system('docker-compose pull')
 print("Updating apps")
 print()
-os.system('./app/app-manager.py update')
+os.system('./app/app-manager.py --invoked-by-configure update')
 print("Configuring permissions")
 print()
 os.system('chown -R 1000:1000 {}'.format(NODE_ROOT))
