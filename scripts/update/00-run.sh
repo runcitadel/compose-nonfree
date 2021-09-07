@@ -18,17 +18,20 @@ yellow() {
     echo -e "\033[33m$@\033[0m"
 }
 
-echo -n "Thanks for running #"; yellow "₿itcoin";
+echo -n "Thanks for running "; yellow "#₿itcoin"; echo -n "And happy "; yellow "#₿itcoinDay";
 sleep 5
 
-red "Please read the following notes carefully, as it explains details about bugs and other issues in the beta."
-sleep 7
+red "Please read the following notes carefully, they explain important details about bugs and other issues in the beta."
+sleep 5
 echo
+echo "Citadel can only be installed on Umbrel 0.4.1 or later. If you're on an older version of Umbrel, please cancel the update now"
+echo "by pressing CTRL+C."
+sleep 5
 echo "Thanks for joining us on the Citadel beta, we're installing the update."
 sleep 3
 echo "Please do not install an update from the dashboard if it asks you to, or you might go back to Umbrel."
 sleep 3
-echo "We're sorry about this issue and ony other potential issues, we're working alpha 3 with more improvements."
+echo "We're sorry aboutany other potential issues, we're working alpha 3 with more improvements."
 sleep 3
 echo "If you have any questions, please DM us on Twitter."
 sleep 3
