@@ -23,7 +23,7 @@ nodeRoot = os.path.join(scriptDir, "..")
 appsDir = os.path.join(nodeRoot, "apps")
 
 parser = argparse.ArgumentParser(description="Manage apps on your Citadel")
-parser.add_argument('action', help='What to do with the app database either list, download, update or update-online. For development purposes, compose-to-app is also available')
+parser.add_argument('action', help='What to do with the app database either list, download, update or update-online.')
 parser.add_argument('--invoked-by-configure', action='store_true')
 args = parser.parse_args()
 
@@ -161,11 +161,11 @@ elif args.action == 'update-online':
         os.system("docker-compose stop app_2_tor")
         os.system("docker-compose start app_2_tor")
     exit(0)
-elif args.action == 'compose-to-app':
-    apps = findApps(appsDir)
-    for app in apps:
-        composeToAppYml(app)
-    exit(0)
+#elif args.action == 'compose-to-app':
+    #apps = findApps(appsDir)
+    #for app in apps:
+        #composeToAppYml(app)
+    #exit(0)
 else:
     print("Error: Unknown action")
     print("See --help for usage")
