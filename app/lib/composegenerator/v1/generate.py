@@ -1,6 +1,6 @@
 from lib.composegenerator.v1.networking import configureIps, configureMainPort
 from lib.composegenerator.shared.main import convertDataDirToVolume, convertContainerPermissions, addStopConfig, convertContainersToServices
-from lib.appvalidation.env import validateEnv
+from lib.composegenerator.shared.env import validateEnv
 import os
 
 def createComposeConfigFromV1(app: dict, nodeRoot: str):

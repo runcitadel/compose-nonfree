@@ -1,5 +1,5 @@
 import re
-from lib.citadelconst import always_allowed_env
+from lib.composegenerator.shared.const import always_allowed_env
 from lib.citadelutils import checkArrayContainsAllElements, getEnvVars
 
 def validateEnvByValue(env: list, allowed: list, app_name: str):

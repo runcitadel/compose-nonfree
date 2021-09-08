@@ -1,7 +1,7 @@
 
 # Main functions
 from lib.citadelutils import combineObjects
-from lib.citadelconst import permissions
+from lib.composegenerator.shared.const import permissions
 
 
 def convertContainerPermissions(app):

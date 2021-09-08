@@ -1,6 +1,5 @@
 from lib.composegenerator.shared.main import convertDataDirToVolume, convertContainerPermissions, addStopConfig, convertContainersToServices
-from lib.appvalidation.env import validateEnv
-import os
+from lib.composegenerator.shared.env import validateEnv
 
 def convertIpToNetwork(app: dict):
     for container in app['containers']:

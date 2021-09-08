@@ -37,7 +37,6 @@ def permissions():
         }
     }
 
-
 # Vars which are always allowed without permissions
 always_allowed_env = ["TOR_PROXY_IP", "TOR_PROXY_PORT",
                       "APP_DOMAIN", "APP_HIDDEN_SERVICE", "BITCOIN_NETWORK"]
