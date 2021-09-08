@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "App",
-  "description": "An app for citadel",
+  "title": "The cleaner app.yml format",
+  "description": "The app.yml format, cleaned up. This format should be used for new apps, but the autoconverter can only convert to v0, so v0 will be kept for some time.",
   "type": "object",
   "properties": {
     "version": {
@@ -54,10 +54,6 @@
           "description": "A link to the app support wiki/chat/...",
           "type": "string"
         },
-        "port": {
-          "description": "The port the app's visible site runs on",
-          "type": "number"
-        },
         "gallery": {
           "type": "array",
           "description": "URLs or paths in the runcitadel/app-images/[app-name] folder with app images",
@@ -76,6 +72,10 @@
         "torOnly": {
           "description": "Whether the app is only available over tor",
           "type": "boolean"
+        },
+        "mainContainer": {
+          "type": "string",
+          "description": "The name of the main container for the app. If set, IP, port, and hidden service will be assigned to it automatically."
         }
       },
       "required": [
@@ -88,7 +88,8 @@
         "website",
         "repo",
         "support",
-        "gallery"
+        "gallery",
+        "mainContainer"
       ],
       "additionalProperties": false
     },
@@ -107,7 +108,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": ["lnd", "bitcoind", "electrum"]
+              "enum": ["lnd", "bitcoind", "electrum", "root", "hw"]
             }
           },
           "ports": {
@@ -115,6 +116,10 @@
             "items": {
               "type": [ "string", "number" ]
             }
+          },
+          "port": {
+            "type": "number",
+            "description": "If this is the main container, the port inside the container which will be exposed to the outside as the port specified in metadata."
           },
           "environment": {
             "type": [ "object", "array" ]
@@ -125,10 +130,6 @@
             "items": {
               "type": "string"
             }
-          },
-          "ip": {
-            "type": "string",
-            "description": "The IP address the container should bind to (Should be unique)"
           },
           "user": {
             "type": "string",
@@ -154,13 +155,13 @@
             "type": "boolean",
             "description": "Whether the container should be run with init"
           },
-          "container_name": {
-            "type": "string",
-            "description": "The name of the container"
-          },
           "stop_signal": {
             "type": "string",
             "description": "The signal to send to the container when stopping"
+          },
+          "noNetwork": {
+            "type": "boolean",
+            "description": "Set this to true if the container shouldn't get an IP & port exposed."
           }
         },
         "additionalProperties": false

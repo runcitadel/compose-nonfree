@@ -1,11 +1,9 @@
-from lib.composegenerator.v0.networking import assignIp, configureMainNetworking
-from lib.appvalidation.env import validateEnv
-from lib.citadelutils import combineObjects
-from lib.citadelconst import permissions
-import os
-
 
 # Main functions
+from lib.citadelutils import combineObjects
+from lib.citadelconst import permissions
+
+
 def convertContainerPermissions(app):
     for container in app['containers']:
         if 'permissions' in container:
@@ -44,48 +42,9 @@ def convertDataDirToVolume(app: dict):
             del container['data']
     return app
 
-
-
-def convertIpToNetwork(app: dict, networkingFile: str, envFile: str):
-    for container in app['containers']:
-        if 'ip' in container:
-            container['networks'] = {'default': {
-                'ipv4_address': container['ip']}}
-            del container['ip']
-        elif 'assignip' in container:
-            if(container['assignip'] != 'False'):
-                container = assignIp(
-                    container, app['metadata']['id'], networkingFile, envFile)
-            del container['assignip']
-
-    return app
-
 def addStopConfig(app: dict):
     for container in app['containers']:
         if not 'stop_grace_period' in container:
             container['stop_grace_period'] = '1m'
         container['restart'] = "on-failure"
-    return app
-
-
-def convertToDockerComposeYML(app: dict, nodeRoot: str):
-    if("version" in app):
-        if(str(app['version']) != "0"):
-            print("Warning: app version is not supported")
-            return False
-    envFile = os.path.join(nodeRoot, ".env")
-    networkingFile = os.path.join(nodeRoot, "apps", "networking.json")
-
-    app = convertContainerPermissions(app)
-    validateEnv(app)
-    app = convertDataDirToVolume(app)
-    app = configureMainNetworking(app, nodeRoot)
-    app = convertIpToNetwork(app, networkingFile, envFile)
-    app = addStopConfig(app)
-    app = convertContainersToServices(app)
-    del app['metadata']
-    if("version" in app):
-        del app["version"]
-    # Set version to 3.7 (current compose file version)
-    app = {'version': '3.7', **app}
     return app

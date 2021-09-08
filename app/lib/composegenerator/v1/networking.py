@@ -2,7 +2,7 @@ from lib.citadelutils import parse_dotenv
 import json
 from os import path
 import random
-from lib.composegenerator.v0.utils.networking import getFreePort, getHiddenService
+from lib.composegenerator.v1.utils.networking import getFreePort, getHiddenService
 
 
 def assignIp(container: dict, appId: str, networkingFile: str, envFile: str):
@@ -84,7 +84,7 @@ def assignPort(container: dict, appId: str, networkingFile: str, envFile: str):
     return {"port": port, "env_var": "${{{}}}".format(env_var)}
 
 
-def configureMainNetworking(app: dict, nodeRoot: str):
+def configureMainPort(app: dict, nodeRoot: str):
     registryFile = path.join(nodeRoot, "apps", "registry.json")
     registry: list = []
     if(path.isfile(registryFile)):
@@ -126,10 +126,11 @@ def configureMainNetworking(app: dict, nodeRoot: str):
             hiddenservice = getHiddenService(
                 app['metadata']['name'], app['metadata']['id'], containerIP, containerPort)
 
-            torFileToAppend = ["torrc-apps", "torrc-apps-2"][random.randint(0,1)]
+            torFileToAppend = ["torrc-apps",
+                "torrc-apps-2"][random.randint(0, 1)]
             with open(path.join(nodeRoot, "tor", torFileToAppend), 'a') as f:
                 f.write(hiddenservice)
-            
+
             # Also set the port in metadata
             app['metadata']['port'] = int(containerPort)
             break
@@ -142,5 +143,20 @@ def configureMainNetworking(app: dict, nodeRoot: str):
     with open(registryFile, 'w') as f:
         json.dump(registry, f, indent=4, sort_keys=True)
 
+    return app
+
+
+def configureIps(app: dict, networkingFile: str, envFile: str):
+    for container in app['containers']:
+        if('noNetwork' in container and container['noNetwork']):
+            # Check if port is defined for the container
+            if('port' in container):
+                raise Exception("Port defined for container without network")
+            if(app['metadata']['mainContainer'] == container['name']):
+                raise Exception("Main container without network")
+            # Skip this iteration of the loop
+            continue
+        
+        container = assignIp(container, app['metadata']['id'], networkingFile, envFile)
 
     return app

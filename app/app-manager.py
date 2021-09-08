@@ -2,7 +2,8 @@
 
 import yaml
 import json
-from lib.generateDockerComposeYml import convertToDockerComposeYML
+from lib.composegenerator.v0.generate import createComposeConfigFromV0
+from lib.composegenerator.v1.generate import createComposeConfigFromV1
 from lib.appymlgenerator import convertComposeYMLToAppYML
 from lib.validate import findAndValidateApps, findApps
 from lib.metadata import getAppRegistry
@@ -11,6 +12,10 @@ import argparse
 import requests
 from sys import argv
 
+# Print an error if user is not root
+if os.getuid() != 0:
+  print('This script must be run as root!')
+  exit(1)
 
 # The directory with this script
 scriptDir = os.path.dirname(os.path.realpath(__file__))
@@ -75,9 +80,9 @@ def update():
         composeFile = os.path.join(appsDir, app, "docker-compose.yml")
         appYml = os.path.join(appsDir, app, "app.yml")
         with open(composeFile, "w") as f:
-            appCompose = getApp(appYml)
+            appCompose = getApp(appYml, app)
             if(appCompose):
-                f.write(yaml.dump(getApp(appYml), sort_keys=False))
+                f.write(yaml.dump(appCompose, sort_keys=False))
     print("Generated configuration successfully")
 
 def download():
@@ -99,10 +104,18 @@ def download():
             print("Warning: Could not download " + args.app)
 
 # Loads an app.yml and converts it to a docker-compose.yml
-def getApp(app):
-    with open(app, 'r') as f:
+def getApp(appFile: str, appId: str):
+    with open(appFile, 'r') as f:
         app = yaml.safe_load(f)
-    return convertToDockerComposeYML(app, nodeRoot)
+
+    if not "metadata" in app:
+        raise Exception("Error: Could not find metadata in " + appFile)
+    app["metadata"]["id"] = appId
+                
+    if('version' in app and str(app['version']) == "1"):
+        return createComposeConfigFromV1(app, nodeRoot)
+    else:
+        return createComposeConfigFromV0(app)
 
 def compose(app, arguments):
     # Runs a compose command in the app dir

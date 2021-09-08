@@ -19,10 +19,10 @@ services:
       BTCEXP_BASIC_AUTH_PASSWORD: ''
     volumes:
     - ${BITCOIN_DATA_DIR}:/bitcoin:ro
-    ports:
-    - ${APP_BTC_RPC_EXPLORER_WEB_PORT}:3002
     networks:
       default:
         ipv4_address: $APP_BTC_RPC_EXPLORER_WEB_IP
+    ports:
+    - ${APP_BTC_RPC_EXPLORER_WEB_PORT}:3002
     stop_grace_period: 1m
     restart: on-failure

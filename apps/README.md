@@ -96,7 +96,6 @@ Let's copy-paste the following template `app.yml` file in a text editor and edit
 ```yml
 # First, define some properties for the app
 metadata:
-  id: btc-rpc-explorer
   category: Explorers
   name: BTC RPC Explorer
   version: 3.2.0

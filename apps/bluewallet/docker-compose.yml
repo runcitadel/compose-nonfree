@@ -30,10 +30,10 @@ services:
     init: true
     volumes:
     - ${LND_DATA_DIR}:/lnd:ro
-    ports:
-    - ${APP_BLUEWALLET_LNDHUB_PORT}
     networks:
       default:
         ipv4_address: $APP_BLUEWALLET_LNDHUB_IP
+    ports:
+    - ${APP_BLUEWALLET_LNDHUB_PORT}
     stop_grace_period: 1m
     restart: on-failure

@@ -1,5 +1,3 @@
-
-from importlib.metadata import metadata
 import os
 import yaml
 from jsonschema import validate
@@ -11,15 +9,28 @@ import json
 scriptDir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 def validateApp(app: dict):
     with open(os.path.join(scriptDir, 'app-standard.json'), 'r') as f:
-        schema = json.loads(f.read())
+        schemaVersion0 = json.loads(f.read())
+    # The new standard
+    with open(os.path.join(scriptDir, 'app-standard-v1.json'), 'r') as f:
+        schemaVersion1 = json.loads(f.read())
 
-    try:
-        validate(app, schema)
-        return True
-    # Catch and log any errors, and return false
-    except Exception as e:
-        print(e)
-        return False
+    if('version' in app and str(app['version']) == "1"):
+        try:
+            validate(app, schemaVersion1)
+            return True
+        # Catch and log any errors, and return false
+        except Exception as e:
+            print(e)
+            return False
+    else:
+        try:
+            validate(app, schemaVersion0)
+            return True
+        # Catch and log any errors, and return false
+        except Exception as e:
+            print(e)
+            return False
+
 
 # Read in an app.yml file and pass it to the validation function
 # Returns true if valid, false otherwise
