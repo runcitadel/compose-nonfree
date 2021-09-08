@@ -45,6 +45,7 @@ def assignIp(container: dict, appId: str, networkingFile: str, envFile: str):
                 break
     container['networks'] = {'default': {
         'ipv4_address': "$" + env_var}}
+
     dotEnv = parse_dotenv(envFile)
     if(env_var in dotEnv and str(dotEnv[env_var]) == str(ip)):
         return container

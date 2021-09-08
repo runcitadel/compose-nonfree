@@ -217,7 +217,7 @@ if [[ "$command" = "start" ]]; then
   exit
 fi
 
-# Passes all arguments to docker-compose
+# Passes all arguments to docker compose
 if [[ "$command" = "compose" ]]; then
   compose "${app}" ${args}
 

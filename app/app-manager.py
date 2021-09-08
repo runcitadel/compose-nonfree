@@ -126,8 +126,8 @@ def compose(app, arguments):
         exit(1)
     # Save the previous working directory and return to it later
     oldDir = os.getcwd()
-    os.chdir(os.path.join("..", "apps", app))
-    os.system("docker-compose --env-file '{}' {}".format(os.path.join(nodeRoot, ".env"), arguments))
+    os.chdir(os.path.join(nodeRoot, "apps", app))
+    os.system("docker compose --env-file '{}' {}".format(os.path.join(nodeRoot, ".env"), arguments))
     os.chdir(oldDir)
 
 if args.action == 'list':
@@ -144,10 +144,10 @@ elif args.action == 'update':
     else:
         os.system(os.path.join(nodeRoot, "scripts", "configure"))
         os.chdir(nodeRoot)
-        os.system("docker-compose stop app_tor")
-        os.system("docker-compose start app_tor")
-        os.system("docker-compose stop app_2_tor")
-        os.system("docker-compose start app_2_tor")
+        os.system("docker compose stop app_tor")
+        os.system("docker compose start app_tor")
+        os.system("docker compose stop app_2_tor")
+        os.system("docker compose start app_2_tor")
     exit(0)
 elif args.action == 'update-online':
     download()
@@ -156,10 +156,10 @@ elif args.action == 'update-online':
     else:
         os.system(os.path.join(nodeRoot, "scripts", "configure"))
         os.chdir(nodeRoot)
-        os.system("docker-compose stop app_tor")
-        os.system("docker-compose start app_tor")
-        os.system("docker-compose stop app_2_tor")
-        os.system("docker-compose start app_2_tor")
+        os.system("docker compose stop app_tor")
+        os.system("docker compose start app_tor")
+        os.system("docker compose stop app_2_tor")
+        os.system("docker compose start app_2_tor")
     exit(0)
 #elif args.action == 'compose-to-app':
     #apps = findApps(appsDir)
