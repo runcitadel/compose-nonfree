@@ -3,6 +3,12 @@
 NODE_ROOT="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))/.."
 cd "${NODE_ROOT}"
 
+if [[ $UID != 0 ]]; then
+    echo "This script must run as root"
+    echo "Please re-run this script as"
+    echo "  sudo ./scripts/start"
+    exit 1
+fi
 
 # Try to load Umbrel OS version info to detect Umbrel OS
 [[ -f "/etc/default/umbrel" ]] && source "/etc/default/umbrel"
@@ -129,19 +135,19 @@ if [[ "${1}" == "--run" ]]; then
     echo "Bitcoin Core logs"
     echo "-----------------"
     echo
-    docker-compose logs --tail=30 bitcoin
+    docker compose logs --tail=30 bitcoin
     
     echo
     echo "LND logs"
     echo "--------"
     echo
-    docker-compose logs --tail=30 lnd
+    docker compose logs --tail=30 lnd
     
     echo
     echo "Tor logs"
     echo "--------"
     echo
-    docker-compose logs --tail=30 tor
+    docker compose logs --tail=30 tor
     
     installed_apps=$(./scripts/app ls-installed)
     if [[ ! -z "${installed_apps:-}" ]]; then

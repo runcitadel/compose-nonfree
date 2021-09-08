@@ -17,7 +17,7 @@ Commands:
     uninstall                  Removes images and destroys all data for an app
     stop                       Stops an installed app
     start                      Starts an installed app
-    compose                    Passes all arguments to docker-compose
+    compose                    Passes all arguments to docker compose
     ls-installed               Lists installed apps
 EOF
 }
@@ -57,7 +57,7 @@ derive_entropy () {
 }
 
 # Check dependencies
-check_dependencies docker-compose jq openssl
+check_dependencies docker jq openssl
 
 if [ -z ${1+x} ]; then
   command=""
@@ -129,7 +129,7 @@ compose() {
   export APP_SAMOURAI_SERVER_NODE_JWT_SECRET=$(derive_entropy "env-${app_entropy_identifier}-NODE_JWT_SECRET")
   export APP_SAMOURAI_SERVER_WHIRLPOOL_API_KEY=$(derive_entropy "env-${app_entropy_identifier}-WHIRLPOOL_API_KEY")
 
-  docker-compose \
+  docker compose \
     --env-file "${env_file}" \
     --project-name "${app}" \
     --file "${app_base_compose_file}" \
