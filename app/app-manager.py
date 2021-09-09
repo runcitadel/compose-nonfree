@@ -5,8 +5,8 @@ import json
 from lib.composegenerator.v0.generate import createComposeConfigFromV0
 from lib.composegenerator.v1.generate import createComposeConfigFromV1
 from lib.appymlgenerator import convertComposeYMLToAppYML
-from lib.validate import findAndValidateApps, findApps
-from lib.metadata import getAppRegistry
+from lib.validate import findAndValidateApps
+from lib.metadata import getAppRegistry, getSimpleAppRegistry
 import os
 import argparse
 import requests
@@ -68,12 +68,16 @@ def composeToAppYml(app):
 
 def update():
     apps = findAndValidateApps(appsDir)
-    # The compose generation process updates the registry, so we need to get it set up with the basics befor that
+    # The compose generation process updates the registry, so we need to get it set up with the basics before that
     registry = getAppRegistry(apps, appsDir)
-    # Write the registry to ../apps/registry.json
     with open(os.path.join(appsDir, "registry.json"), "w") as f:
         json.dump(registry, f, indent=4, sort_keys=True)
     print("Wrote registry to registry.json")
+
+    simpleRegistry = getSimpleAppRegistry(apps, appsDir)
+    with open(os.path.join(appsDir, "apps.json"), "w") as f:
+        json.dump(simpleRegistry, f, indent=4, sort_keys=True)
+    print("Wrote simple registry to apps.json")
     
     # Loop through the apps and generate valid compose files from them, then put these into the app dir
     for app in apps:
