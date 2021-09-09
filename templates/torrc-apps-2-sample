@@ -24,10 +24,6 @@ HiddenServicePort 80 <app-nextcloud-ip>:80
 HiddenServiceDir /var/lib/tor/app-pi-hole
 HiddenServicePort 80 <app-pi-hole-ip>:80
 
-# home-assistant Hidden Service
-HiddenServiceDir /var/lib/tor/app-home-assistant
-HiddenServicePort 80 <app-home-assistant-ip>:8123
-
 # gitea Hidden Service
 HiddenServiceDir /var/lib/tor/app-gitea
 HiddenServicePort 80 <app-gitea-ip>:<app-gitea-port>

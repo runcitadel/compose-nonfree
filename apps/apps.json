@@ -33,7 +33,7 @@
         "id": "home-assistant",
         "name": "Home Assistant",
         "repo": "https://github.com/home-assistant/core",
-        "version": "2021.9.4"
+        "version": "2021.9.5"
     },
     {
         "id": "photoprism",
