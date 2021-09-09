@@ -19,7 +19,7 @@
         "repo": "https://github.com/apotdevin/thunderhub",
         "support": "https://t.me/thunderhub",
         "tagline": "Take full control of your Lightning node",
-        "version": "0.12.24",
+        "version": "0.12.25",
         "website": "https://apotdevin.com"
     },
     {
@@ -221,7 +221,7 @@
         "id": "btc-rpc-explorer",
         "mainContainer": "web",
         "name": "BTC RPC Explorer",
-        "port": 1038,
+        "port": 26647,
         "repo": "https://github.com/janoside/btc-rpc-explorer",
         "support": "https://github.com/janoside/btc-rpc-explorer/discussionsa",
         "tagline": "Simple, database-free blockchain explorer",
@@ -331,7 +331,7 @@
         "id": "bluewallet",
         "mainContainer": "lndhub",
         "name": "BlueWallet Lightning",
-        "port": 14909,
+        "port": 27439,
         "repo": "https://github.com/BlueWallet/LndHub",
         "support": "https://t.me/bluewallet",
         "tagline": "Connect BlueWallet to your Lightning node",
@@ -471,7 +471,7 @@
         "support": "https://matrix.to/#/#synapse:matrix.org",
         "tagline": "Matrix reference homeserver",
         "torOnly": false,
-        "version": "1.41.1",
+        "version": "1.42.0",
         "website": "https://matrix.org"
     }
 ]
