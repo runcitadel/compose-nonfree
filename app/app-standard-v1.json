@@ -88,8 +88,7 @@
         "website",
         "repo",
         "support",
-        "gallery",
-        "mainContainer"
+        "gallery"
       ],
       "additionalProperties": false
     },

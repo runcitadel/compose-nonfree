@@ -94,47 +94,55 @@ def configureMainPort(app: dict, nodeRoot: str):
     else:
         raise Exception("Registry file not found")
 
-    if not "mainContainer" in app['metadata']:
-        return app
 
     dotEnv = parse_dotenv(path.join(nodeRoot, ".env"))
 
-    for container in app['containers']:
-        if(container['name'] == app['metadata']['mainContainer']):
-            portDetails = assignPort(container, app['metadata']['id'], path.join(
-                nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
-            containerPort = portDetails['port']
-            portAsEnvVar = portDetails['env_var']
-            portToAppend = portAsEnvVar
-            if("port" in container):
-                portToAppend = "{}:{}".format(portAsEnvVar, container['port'])
-                del container['port']
+    if len(app['containers']) == 1:
+        mainContainer = app['containers'][0]
+    else:
+        if not "mainContainer" in app['metadata']:
+            raise Exception("No main container defined")
 
-            if("ports" in container):
-                container['ports'].append(portToAppend)
-            else:
-                container['ports'] = [portToAppend]
+        for container in app['containers']:
+            if(container['name'] == app['metadata']['mainContainer']):
+                mainContainer = container
+                break
+    
 
-            container = assignIp(container, app['metadata']['id'], path.join(
-                nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
+    portDetails = assignPort(mainContainer, app['metadata']['id'], path.join(
+        nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
+    containerPort = portDetails['port']
+    portAsEnvVar = portDetails['env_var']
+    portToAppend = portAsEnvVar
 
-            # If the IP wasn't in dotenv before, now it should be
-            dotEnv = parse_dotenv(path.join(nodeRoot, ".env"))
+    if "port" in mainContainer:
+        portToAppend = "{}:{}".format(portAsEnvVar, mainContainer['port'])
+        del mainContainer['port']
 
-            containerIP = dotEnv['APP_{}_{}_IP'.format(app['metadata']['id'].upper().replace(
-                "-", "_"), app['metadata']['mainContainer'].upper().replace("-", "_"))]
+    if "ports" in mainContainer:
+        mainContainer['ports'].append(portToAppend)
+    else:
+        mainContainer['ports'] = [portToAppend]
 
-            hiddenservice = getHiddenService(
-                app['metadata']['name'], app['metadata']['id'], containerIP, containerPort)
+    mainContainer = assignIp(mainContainer, app['metadata']['id'], path.join(
+        nodeRoot, "apps", "networking.json"), path.join(nodeRoot, ".env"))
 
-            torFileToAppend = ["torrc-apps",
-                "torrc-apps-2"][random.randint(0, 1)]
-            with open(path.join(nodeRoot, "tor", torFileToAppend), 'a') as f:
-                f.write(hiddenservice)
+    # If the IP wasn't in dotenv before, now it should be
+    dotEnv = parse_dotenv(path.join(nodeRoot, ".env"))
 
-            # Also set the port in metadata
-            app['metadata']['port'] = int(containerPort)
-            break
+    containerIP = dotEnv['APP_{}_{}_IP'.format(app['metadata']['id'].upper().replace(
+        "-", "_"), mainContainer['name'].upper().replace("-", "_"))]
+
+    hiddenservice = getHiddenService(
+        app['metadata']['name'], app['metadata']['id'], containerIP, containerPort)
+
+    torFileToAppend = ["torrc-apps",
+        "torrc-apps-2"][random.randint(0, 1)]
+    with open(path.join(nodeRoot, "tor", torFileToAppend), 'a') as f:
+        f.write(hiddenservice)
+
+    # Also set the port in metadata
+    app['metadata']['port'] = int(containerPort)
 
     for registryApp in registry:
         if(registryApp['id'] == app['metadata']['id']):
