@@ -41,7 +41,7 @@ metadata:
 containers:
 - image: mariadb:10.6.4@sha256:4bbee12b1adf299211f844ebbe89563675c46965470dcfa40f5278d63c56d030
   user: 1000:1000
-  command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+  command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --skip-innodb-read-only-compressed
   environment:
     MYSQL_ROOT_PASSWORD: moneyprintergobrrr
     MYSQL_PASSWORD: moneyprintergobrrr
