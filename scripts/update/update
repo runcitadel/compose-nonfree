@@ -28,7 +28,7 @@ elif [[ "${1}" == "--repo" ]]; then
   update_type="repo"
   descriptor="${2}"
   if [[ "${descriptor}" != *"#"* ]]; then
-    descriptor="${descriptor}#master"
+    descriptor="${descriptor}#main"
   fi
   repo="${descriptor%%#*}"
   branch="${descriptor#*#}"
@@ -58,7 +58,7 @@ if [[ "${update_type}" == "repo" ]]; then
 fi
 
 if [[ "${update_type}" == "path" ]] && [[ ! -f "${update_path}/.umbrel" ]]; then
-  echo "Update path doesn't seem to be an Umbrel install."
+  echo "Update path doesn't seem to be a Citadel or Umbrel install."
   exit 1
 fi
 
@@ -91,7 +91,7 @@ echo "Cleaning up any previous mess"
 
 # Update status file
 cat <<EOF > "$UMBREL_ROOT"/statuses/update-status.json
-{"state": "installing", "progress": 10, "description": "Downloading Umbrel $RELEASE", "updateTo": "$RELEASE"}
+{"state": "installing", "progress": 10, "description": "Downloading Citadel $RELEASE", "updateTo": "$RELEASE"}
 EOF
 
 # Download new release
@@ -99,12 +99,12 @@ if [[ "${update_type}" == "ota" ]]; then
   echo "Downloading Umbrel ${RELEASE}"
   mkdir -p "${UMBREL_ROOT}/.umbrel-${RELEASE}"
   cd "${UMBREL_ROOT}/.umbrel-${RELEASE}"
-  curl -L "https://github.com/getumbrel/umbrel/archive/$RELEASE.tar.gz" | tar -xz --strip-components=1
+  curl -L "https://github.com/runcitadel/compose-nonfree/archive/$RELEASE.tar.gz" | tar -xz --strip-components=1
 fi
 
 # Copy over new release from path
 if [[ "${update_type}" == "path" ]]; then
-  echo "Copying Umbrel ${RELEASE} from ${update_path}"
+  echo "Copying Citadel ${RELEASE} from ${update_path}"
   mkdir -p "${UMBREL_ROOT}/.umbrel-${RELEASE}"
   cp --recursive \
     --archive \
