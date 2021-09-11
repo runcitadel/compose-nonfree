@@ -18,7 +18,7 @@ yellow() {
     echo -e "\033[33m$@\033[0m"
 }
 
-echo -n "Thanks for running "; yellow "#₿itcoin"; echo -n "And happy "; yellow "#₿itcoinDay";
+echo -n "Thanks for running "; yellow "#₿itcoin";
 sleep 5
 
 red "Please read the following notes carefully, they explain important details about bugs and other issues in the beta."
