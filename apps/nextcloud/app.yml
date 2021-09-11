@@ -63,7 +63,7 @@ containers:
   environment:
     MYSQL_HOST: ${APP_NEXTCLOUD_DB_IP}
     REDIS_HOST: ${APP_NEXTCLOUD_REDIS_IP}
-    MYSQL_PASSWORD: oneyprintergobrrr
+    MYSQL_PASSWORD: moneyprintergobrrr
     MYSQL_DATABASE: nextcloud
     MYSQL_USER: nextcloud
     NEXTCLOUD_ADMIN_USER: umbrel
