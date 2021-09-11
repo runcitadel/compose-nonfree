@@ -35,13 +35,13 @@ def assignIp(container: dict, appId: str, networkingFile: str, envFile: str):
     if(len(usedIps) == 206):
         raise Exception("No more IPs can be used")
 
-    if(appId in networkingData['ip_addresses']):
-        ip = networkingData['ip_addresses'][appId]
+    if("{}-{}".format(appId, container['name']) in networkingData['ip_addresses']):
+        ip = networkingData['ip_addresses']["{}-{}".format(appId, container['name'])]
     else:
         while True:
             ip = "10.21.21." + str(random.randint(50, 255))
             if(ip not in usedIps):
-                networkingData['ip_addresses'][appId] = ip
+                networkingData['ip_addresses']["{}-{}".format(appId, container['name'])] = ip
                 break
     container['networks'] = {'default': {
         'ipv4_address': "$" + env_var}}
