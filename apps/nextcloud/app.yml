@@ -1,3 +1,5 @@
+version: 1
+
 metadata:
   category: Files
   name: Nextcloud
@@ -29,17 +31,17 @@ metadata:
   dependencies: []
   repo: https://github.com/nextcloud/server
   support: https://help.nextcloud.com/categories
-  port: 8081
   gallery:
   - 1.jpg
   - 2.jpg
   - 3.jpg
   path: /login?user=umbrel
   defaultPassword: moneyprintergobrrr
-  torOnly: false
+  mainContainer: web
 
 containers:
-- image: mariadb:10.6.4@sha256:4bbee12b1adf299211f844ebbe89563675c46965470dcfa40f5278d63c56d030
+- name: db
+  image: mariadb:10.6.4@sha256:4bbee12b1adf299211f844ebbe89563675c46965470dcfa40f5278d63c56d030
   user: 1000:1000
   command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --skip-innodb-read-only-compressed
   environment:
@@ -47,19 +49,18 @@ containers:
     MYSQL_PASSWORD: moneyprintergobrrr
     MYSQL_DATABASE: nextcloud
     MYSQL_USER: nextcloud
-  name: db
   data:
   - data/db:/var/lib/mysql
-  ip: $APP_NEXTCLOUD_DB_IP
+
 - image: redis:6.2.2-buster@sha256:e10f55f92478715698a2cef97c2bbdc48df2a05081edd884938903aa60df6396
   user: 1000:1000
   name: redis
   data:
   - data/redis:/data
-  ip: $APP_NEXTCLOUD_REDIS_IP
-- image: nextcloud:22.1.1-apache@sha256:f566c9fd6d904c9be23f0a1f9f61a02c23723f13eac56f6bfcea1a708636aa0f
-  ports:
-  - ${APP_NEXTCLOUD_PORT}:80
+
+- name: web
+  image: nextcloud:22.1.1-apache@sha256:f566c9fd6d904c9be23f0a1f9f61a02c23723f13eac56f6bfcea1a708636aa0f
+  port: 80
   environment:
     MYSQL_HOST: ${APP_NEXTCLOUD_DB_IP}
     REDIS_HOST: ${APP_NEXTCLOUD_REDIS_IP}
@@ -68,14 +69,14 @@ containers:
     MYSQL_USER: nextcloud
     NEXTCLOUD_ADMIN_USER: umbrel
     NEXTCLOUD_ADMIN_PASSWORD: moneyprintergobrrr
-    NEXTCLOUD_TRUSTED_DOMAINS: ${APP_DOMAIN}:${APP_NEXTCLOUD_PORT} ${APP_HIDDEN_SERVICE}
+    NEXTCLOUD_TRUSTED_DOMAINS: ${APP_DOMAIN}:${APP_NEXTCLOUD_WEB_PORT} ${APP_HIDDEN_SERVICE}
   depends_on:
   - db
   - redis
   name: web
   data:
   - data/nextcloud:/var/www/html
-  ip: $APP_NEXTCLOUD_IP
+
 - image: nextcloud:22.1.1-apache@sha256:f566c9fd6d904c9be23f0a1f9f61a02c23723f13eac56f6bfcea1a708636aa0f
   entrypoint: /cron.sh
   depends_on:
@@ -84,4 +85,3 @@ containers:
   name: cron
   data:
   - data/nextcloud:/var/www/html
-  ip: $APP_NEXTCLOUD_CRON_IP
