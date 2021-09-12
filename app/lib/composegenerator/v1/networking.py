@@ -136,8 +136,8 @@ def configureMainPort(app: dict, nodeRoot: str):
     hiddenservice = getHiddenService(
         app['metadata']['name'], app['metadata']['id'], containerIP, containerPort)
 
-    torFileToAppend = ["torrc-apps",
-        "torrc-apps-2"][random.randint(0, 1)]
+    torDaemons = ["torrc-apps", "torrc-apps-2", "torrc-apps-3"]
+    torFileToAppend = torDaemons[random.randint(0, len(torDaemons) - 1)]
     with open(path.join(nodeRoot, "tor", torFileToAppend), 'a') as f:
         f.write(hiddenservice)
 

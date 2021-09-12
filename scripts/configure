@@ -190,6 +190,8 @@ LND_IP=              "10.21.21.8"
 TOR_PROXY_IP=        "10.21.21.9"
 APPS_TOR_IP=         "10.21.21.10"
 APPS_2_TOR_IP=       "10.21.21.11"
+# TODO(@AaronDewes): Change this IP
+APPS_3_TOR_IP=       "10.21.21.49"
 ELECTRUM_IP=         "10.21.21.12"
 BITCOIN_ZMQ_RAWBLOCK_PORT="28332"
 BITCOIN_ZMQ_RAWTX_PORT="28333"
@@ -297,6 +299,7 @@ def replace_vars(file_path):
 templates_to_build = {
   "./templates/torrc-apps-sample": "./tor/torrc-apps",
   "./templates/torrc-apps-2-sample": "./tor/torrc-apps-2",
+  "./templates/torrc-apps-3-sample": "./tor/torrc-apps-3",
   "./templates/torrc-umbrel-sample": "./tor/torrc-umbrel",
   "./templates/lnd-sample.conf": "./lnd/lnd.conf",
   "./templates/bitcoin-sample.conf": "./bitcoin/bitcoin.conf",
