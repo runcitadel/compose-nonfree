@@ -92,7 +92,7 @@ services:
                         ipv4_address: $DASHBOARD_IP
         manager:
                 container_name: manager
-                image: runcitadel/manager:main@sha256:95bfc229178769f5970bc6ec8c634e30190df4966472142f9a414112229df98e
+                image: runcitadel/manager:main@sha256:1ab6d9dbf1e79a0e2097bf55d9286622eaf99cdee571854903dbfebe12718388
                 depends_on: [ tor ]
                 restart: on-failure
                 init: true
@@ -151,7 +151,7 @@ services:
                         ipv4_address: $MANAGER_IP
         middleware:
                 container_name: middleware
-                image: runcitadel/middleware:main@sha256:d14950a16680241ed2070efb4bbf6b5cba83260d29ff79ff22cab978b0ae5310
+                image: runcitadel/middleware:main@sha256:23cf5bbf1465b6f0308a919edbdb31cbd4d15bff88b266c6888df1989c862be8
                 depends_on: [ manager, bitcoin, lnd ]
                 command: ["./wait-for-node-manager.sh", $MANAGER_IP, "npm", "start"]
                 restart: on-failure
