@@ -12,6 +12,12 @@
         "version": "0.11.2"
     },
     {
+        "id": "squeaknode",
+        "name": "Squeaknode",
+        "repo": "https://github.com/yzernik/squeaknode",
+        "version": "0.1.152"
+    },
+    {
         "id": "pi-hole",
         "name": "Pi-hole",
         "repo": "https://github.com/pi-hole/pi-hole",
