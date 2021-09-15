@@ -4,7 +4,6 @@ bitcoin/*
 lnd/*
 statuses
 tor/*
-electrs/*
 events/signals
 logs/*
 app-data/*

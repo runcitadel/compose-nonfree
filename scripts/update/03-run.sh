@@ -21,7 +21,7 @@ cat <<EOF > "$UMBREL_ROOT"/statuses/update-status.json
 EOF
 [[ -d "$UMBREL_ROOT"/.umbrel-backup ]] && rm -rf "$UMBREL_ROOT"/.umbrel-backup
 
-echo "Successfully installed Umbrel $RELEASE"
+echo "Successfully installed Citadel!"
 cat <<EOF > "$UMBREL_ROOT"/statuses/update-status.json
-{"state": "success", "progress": 100, "description": "Successfully installed Umbrel $RELEASE", "updateTo": ""}
+{"state": "success", "progress": 100, "description": "Successfully installed Citadel!", "updateTo": ""}
 EOF
