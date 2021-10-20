@@ -131,6 +131,11 @@ echo "Fixing permissions"
 find "$CITADEL_ROOT" -path "$CITADEL_ROOT/app-data" -prune -o -exec chown 1000:1000 {} +
 chmod -R 700 "$CITADEL_ROOT"/tor/data/*
 
+# If "$CITADEL_ROOT"/db/umbrel-seed exists, move it to "$CITADEL_ROOT"/db/citadel-seed
+if [[ -f "$CITADEL_ROOT"/db/umbrel-seed ]]; then
+    echo "Moving $CITADEL_ROOT/db/umbrel-seed to $CITADEL_ROOT/db/citadel-seed"
+    mv "$CITADEL_ROOT"/db/umbrel-seed "$CITADEL_ROOT"/db/citadel-seed
+fi
 
 echo "Updating installed apps"
 cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
