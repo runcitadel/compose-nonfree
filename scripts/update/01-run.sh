@@ -39,7 +39,7 @@ EOF
 fi
 
 # If the Citadel OS version is 0.0.1, fail
-if [[ -z "${CITADEL_OS:-}" ]] && [[ "${CITADEL_OS}" == "0.0.1" ]]; then
+if [[ ! -z "${CITADEL_OS:-}" ]] && [[ "${CITADEL_OS}" == "0.0.1" ]]; then
     echo "Citadel OS version is 0.0.1. This is not supported."
   cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
 {"state": "installing", "progress": 50, "description": "We're sorry, but you tried installing the update on an unsupported OS. Please unplug your node and reflash the SD card with Citadel OS to continue.", "updateTo": "$RELEASE"}
@@ -53,7 +53,7 @@ EOF
 fi
 
 # Make Citadel OS specific updates
-if [[ -z "${CITADEL_OS:-}" ]]; then
+if [[ ! -z "${CITADEL_OS:-}" ]]; then
     echo
     echo "============================================="
     echo "Installing on Citadel OS $CITADEL_OS"
@@ -169,7 +169,7 @@ cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
 EOF
 
 # Make Citadel OS specific post-update changes
-if [[ -z "${CITADEL_OS:-}" ]]; then
+if [[ ! -z "${CITADEL_OS:-}" ]]; then
   # Delete unused Docker images on Citadel OS
   echo "Deleting previous images"
   docker image prune --all --force
