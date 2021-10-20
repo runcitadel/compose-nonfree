@@ -25,8 +25,8 @@ echo
 [[ -f "/etc/default/citadel" ]] && source "/etc/default/citadel"
 
 IS_MIGRATING=0
-# Check if UMBREL_OS is set and CITADEL_OS is not
-if [[ -z "${UMBREL_OS:-}" ]] && [[ -n "${CITADEL_OS:-}" ]]; then
+# Check if UMBREL_OS is set
+if [[ -z "${UMBREL_OS:-}" ]]; then
     echo "Umbrel OS is no longer supported."
   cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
 {"state": "installing", "progress": 50, "description": "We're sorry, but you tried installing the update on an unsupported OS. Please unplug your node and reflash the SD card with Citadel OS to continue.", "updateTo": "$RELEASE"}
