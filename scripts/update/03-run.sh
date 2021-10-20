@@ -19,12 +19,8 @@ echo
 
 # Cleanup
 echo "Removing backup"
-cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
-{"state": "installing", "progress": 95, "description": "Removing backup"}
-EOF
 [[ -d "$CITADEL_ROOT"/.umbrel-backup ]] && rm -rf "$CITADEL_ROOT"/.umbrel-backup
+[[ -d "$CITADEL_ROOT"/.citadel-backup ]] && rm -rf "$CITADEL_ROOT"/.citadel-backup
 
 echo "Successfully installed Citadel $RELEASE"
-cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
-{"state": "success", "progress": 100, "description": "Successfully installed Citadel $RELEASE", "updateTo": ""}
-EOF
+echo "Thank you for using Citadel!"

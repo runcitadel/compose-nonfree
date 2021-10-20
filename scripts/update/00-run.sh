@@ -15,31 +15,8 @@ if [ -d "$CITADEL_ROOT/.umbrel-$RELEASE" ]; then
     echo "Migrating from Umbrel..."
     echo "Your Umbrel will now be turned into a Citadel"
     echo "Please contact the Citadel team if anything goes wrong during the update"
-    echo "Waiting 5 seconds, then the migration will start"
-    sleep 5
     mv "$CITADEL_ROOT/.umbrel-$RELEASE" "$CITADEL_ROOT/.citadel-$RELEASE"
 fi
-
-# Functions which work like echo, but color the text red, green, and yellow
-# respectively.
-red() {
-    echo -e "\033[31m$@\033[0m"
-}
-green() {
-    echo -e "\033[32m$@\033[0m"
-}
-yellow() {
-    echo -e "\033[33m$@\033[0m"
-}
-
-echo -n "Thanks for running "; yellow "#₿itcoin";
-sleep 3
-
-echo "This version of Citadel can only be installed on Umbrel 0.4.2 or existing Citadel installations. If you're on an older version of Umbrel, please cancel the update now"
-echo "by pressing CTRL+C."
-sleep 10
-echo
-green "Thanks for testing Citadel! The upgrade will start now."
 
 echo
 echo "======================================="
