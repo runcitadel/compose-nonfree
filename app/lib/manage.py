@@ -39,10 +39,6 @@ appDataDir = os.path.join(nodeRoot, "app-data")
 userFile = os.path.join(nodeRoot, "db", "user.json")
 legacyScript = os.path.join(nodeRoot, "scripts", "app")
 
-
-def runCompose(app: str, args: str):
-    compose(app, args)
-
 # Returns a list of every argument after the second one in sys.argv joined into a string by spaces
 
 
@@ -129,8 +125,8 @@ def startInstalled():
     threads = []
     for app in userData["installedApps"]:
         print("Starting app {}...".format(app))
-        # Run runCompose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
-        thread = threading.Thread(target=runCompose, args=(app, "up --detach"))
+        # Run compose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
+        thread = threading.Thread(target=compose, args=(app, "up --detach"))
         thread.start()
         threads.append(thread)
     joinThreads(threads)
@@ -145,9 +141,9 @@ def stopInstalled():
     threads = []
     for app in userData["installedApps"]:
         print("Stopping app {}...".format(app))
-        # Run runCompose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
+        # Run compose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
         thread = threading.Thread(
-            target=runCompose, args=(app, "rm --force --stop"))
+            target=compose, args=(app, "rm --force --stop"))
         thread.start()
         threads.append(thread)
     joinThreads(threads)
@@ -183,6 +179,9 @@ def compose(app, arguments):
     for i in range(1, 6):
         os.environ["APP_SEED_{}".format(i)] = deriveEntropy("app-{}-seed{}".format(app, i))
     os.environ["APP_DATA_DIR"] = os.path.join(appDataDir, app)
+    # Chown and chmod dataDir to have the owner 1000:1000 and the same permissions as appDir
+    os.chown(os.path.join(appDataDir, app), 1000, 1000)
+    os.chmod(os.path.join(appDataDir, app), os.stat(os.path.join(appDataDir, app)).st_mode)
     os.environ["BITCOIN_DATA_DIR"] = os.path.join(nodeRoot, "bitcoin")
     os.environ["LND_DATA_DIR"] = os.path.join(nodeRoot, "lnd")
     # List all hidden services for an app and put their hostname in the environment
@@ -222,8 +221,8 @@ def createDataDir(app: str):
     # Recursively copy everything from appDir to dataDir while excluding .gitignore
     shutil.copytree(appDir, dataDir, symlinks=False,
                     ignore=shutil.ignore_patterns(".gitignore"))
-    # Chown and chmod dataDir to have the same owner and permissions as appDir
-    os.chown(dataDir, os.stat(appDir).st_uid, os.stat(appDir).st_gid)
+    # Chown and chmod dataDir to have the owner 1000:1000 and the same permissions as appDir
+    os.chown(dataDir, 1000, 1000)
     os.chmod(dataDir, os.stat(appDir).st_mode)
 
 

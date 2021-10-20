@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 import json
-from lib.manage import createDataDir, deleteData, download, getUserData, runCompose, setInstalled, setRemoved, startInstalled, stopInstalled, update, deriveEntropy, updateRepos
+from lib.manage import compose, createDataDir, deleteData, getUserData, setInstalled, setRemoved, startInstalled, stopInstalled, update, deriveEntropy, updateRepos
 from lib.validate import findAndValidateApps
 import os
 import argparse
@@ -90,8 +90,8 @@ elif args.action == 'install':
         print("No app provided")
         exit(1)
     createDataDir(args.app)
-    runCompose(args.app, "pull")
-    runCompose(args.app, "up --detach")
+    compose(args.app, "pull")
+    compose(args.app, "up --detach")
     setInstalled(args.app)
 elif args.action == 'uninstall':
     if not args.app:
@@ -102,7 +102,7 @@ elif args.action == 'uninstall':
         print("App {} is not installed".format(args.app))
         exit(1)
     print("Stopping app {}...".format(args.app))
-    runCompose(args.app, "rm --force --stop")
+    compose(args.app, "rm --force --stop")
     print("Deleting data...")
     deleteData(args.app)
     print("Removing from the list of installed apps...")
@@ -117,7 +117,7 @@ elif args.action == 'stop':
             stopInstalled()
         exit(0)
     print("Stopping app {}...".format(args.app))
-    runCompose(args.app, "rm --force --stop")
+    compose(args.app, "rm --force --stop")
 elif args.action == 'start':
     if not args.app:
         print("No app provided")
@@ -132,7 +132,7 @@ elif args.action == 'start':
     if not "installedApps" in userData or args.app not in userData["installedApps"]:
         print("App {} is not yet installed".format(args.app))
         exit(1)
-    runCompose(args.app, "up --detach")
+    compose(args.app, "up --detach")
 
 elif args.action == 'restart':
     if not args.app:
@@ -147,14 +147,14 @@ elif args.action == 'restart':
     if not "installedApps" in userData or args.app not in userData["installedApps"]:
         print("App {} is not yet installed".format(args.app))
         exit(1)
-    runCompose(args.app, "rm --force --stop")
-    runCompose(args.app, "up --detach")
+    compose(args.app, "rm --force --stop")
+    compose(args.app, "up --detach")
 
 elif args.action == 'compose':
     if not args.app:
         print("No app provided")
         exit(1)
-    runCompose(args.app, " ".join(args.other))
+    compose(args.app, " ".join(args.other))
 
 elif args.action == "entropy":
     if(args.app == ""):
