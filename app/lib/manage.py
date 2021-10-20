@@ -180,7 +180,7 @@ def compose(app, arguments):
         os.environ["APP_SEED_{}".format(i)] = deriveEntropy("app-{}-seed{}".format(app, i))
     os.environ["APP_DATA_DIR"] = os.path.join(appDataDir, app)
     # Chown and chmod dataDir to have the owner 1000:1000 and the same permissions as appDir
-    os.chown(os.path.join(appDataDir, app), 1000, 1000)
+    subprocess.call("chown -R 1000:1000 {}".format(os.path.join(appDataDir, app)), shell=True)
     os.chmod(os.path.join(appDataDir, app), os.stat(os.path.join(appDataDir, app)).st_mode)
     os.environ["BITCOIN_DATA_DIR"] = os.path.join(nodeRoot, "bitcoin")
     os.environ["LND_DATA_DIR"] = os.path.join(nodeRoot, "lnd")
@@ -222,7 +222,7 @@ def createDataDir(app: str):
     shutil.copytree(appDir, dataDir, symlinks=False,
                     ignore=shutil.ignore_patterns(".gitignore"))
     # Chown and chmod dataDir to have the owner 1000:1000 and the same permissions as appDir
-    os.chown(dataDir, 1000, 1000)
+    subprocess.call("chown -R 1000:1000 {}".format(os.path.join(appDataDir, app)), shell=True)
     os.chmod(dataDir, os.stat(appDir).st_mode)
 
 
