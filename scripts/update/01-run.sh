@@ -163,6 +163,7 @@ cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
 {"state": "installing", "progress": 80, "description": "Starting new containers", "updateTo": "$RELEASE"}
 EOF
 cd "$CITADEL_ROOT"
+docker network rm citadel_main_network || true
 ./scripts/start
 
 cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
