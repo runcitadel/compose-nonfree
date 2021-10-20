@@ -71,14 +71,16 @@ except:
     print('Docker is not installed!')
     exit(1)
 
-# Switch to UMBREL root directory.
+# Switch to node root directory.
 CITADEL_ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(CITADEL_ROOT)
 
+updating = False
 status_dir = os.path.join(CITADEL_ROOT, 'statuses')
 # Make sure to use the main status dir for updates
 if os.path.isfile('../.umbrel'):
     status_dir = os.path.join(CITADEL_ROOT, '..', 'statuses')
+    updating = True
 
 # Configure for mainnet or testnet or regtest depending
 # upon the user-supplied value of $NETWORK
@@ -321,9 +323,10 @@ for template_path, output_path in templates_to_build.items():
 print("Installing docker-compose...")
 print()
 download_docker_compose()
-print("Updating apps...")
-print()
-os.system('./app/app-manager.py --invoked-by-configure update-online')
+if not updating:
+  print("Updating apps...")
+  print()
+  os.system('./app/app-manager.py --invoked-by-configure update-online')
 print("Configuring permissions")
 print()
 os.system('chown -R 1000:1000 {}'.format(CITADEL_ROOT))

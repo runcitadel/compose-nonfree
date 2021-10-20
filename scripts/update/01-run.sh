@@ -137,6 +137,7 @@ if [[ -f "$CITADEL_ROOT"/db/umbrel-seed ]]; then
     mv "$CITADEL_ROOT"/db/umbrel-seed "$CITADEL_ROOT"/db/citadel-seed
 fi
 
+cd "$CITADEL_ROOT"
 echo "Updating installed apps"
 cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
 {"state": "installing", "progress": 70, "description": "Updating installed apps", "updateTo": "$RELEASE"}
