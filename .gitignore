@@ -1,22 +1,7 @@
-# SPDX-FileCopyrightText: 2021 Umbrel. https://getumbrel.com
-#
-# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
-
-# Ignore all the bash stuff
-
-.bash_history
-.bash_logout
-.bashrc
-.profile
-.ssh
-.viminfo
-
-# Python bytecode
-__pycache__
-*.py[cod]
-
-# dev environment
-docker-compose.override.yml
+# SPDX-FileCopyrightText: 2020 Umbrel
+# SPDX-FileCopyrightText: 2021 Citadel and contributors
+# 
+# SPDX-License-Identifier: MIT
 
 # Files and data directories created by services
 # that we shouldn't accidently commit
@@ -28,23 +13,20 @@ docker-compose.override.yml
 *.pid
 *.env
 .backup
+*.pyc
 bitcoin/*
-db/*
-electrs/*
-nginx/*
-events/signals/*
 lnd/*
-logs/*
-statuses/*
 tor/*
-app-data/*
-apps/*
-
-# Commit these files
-
-!statuses/update-status.json
+db/*
+statuses/*
+app-data
+apps
+electrs
+nginx
+events/signals
 
 # Commit these empty directories
+!statuses/update-status.json
 !apps/.gitkeep
 !db/.gitkeep
 !db/citadel-seed
@@ -55,7 +37,7 @@ db/citadel-seed/*
 !logs/.gitkeep
 !tor/data/.gitkeep
 !tor/run/.gitkeep
-
+!db/.gitkeep
 
 !**/*.license
 services/installed.json
