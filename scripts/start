@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# SPDX-FileCopyrightText: 2020-2021 Umbrel. https://getumbrel.com
+# SPDX-FileCopyrightText: 2020 Umbrel https://getumbrel.com
+# SPDX-FileCopyrightText: 2021 Citadel and contributors
 #
-# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-License-Identifier: MIT
 
 set -euo pipefail
 
@@ -65,7 +66,7 @@ else
 fi
 
 # Whitelist device IP, hostname and hidden service for CORS
-DEVICE_IP="$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')"
+DEVICE_IP=$(hostname -I | awk '{print $1}')
 DEVICE_HOSTNAME="$(hostname)"
 DEVICE_HOSTS="http://${DEVICE_IP},http://${DEVICE_HOSTNAME}.local,https://${DEVICE_HOSTNAME}.local,http://${DEVICE_HOSTNAME},https://${DEVICE_HOSTNAME}"
 if [[ -f "${CITADEL_ROOT}/tor/data/web/hostname" ]]; then

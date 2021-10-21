@@ -93,7 +93,7 @@ if BITCOIN_NETWORK not in ['mainnet', 'testnet', 'regtest']:
     exit(1)
 
 with open(os.path.join(CITADEL_ROOT, "info.json"), 'r') as file:
-  UMBREL_VERSION=json.load(file)['version']
+  CITADEL_VERSION=json.load(file)['version']
 
 print()
 print("======================================")
