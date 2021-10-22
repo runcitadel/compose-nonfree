@@ -85,6 +85,12 @@ if [[ ! -z "${CITADEL_OS:-}" ]]; then
       install -m 644 "${service_path}" "/etc/systemd/system/${service_name}"
       systemctl enable "${service_name}"
     done
+    
+    # Workaround for some docker issues
+    docker stop app_tor || true
+    docker stop app_2_tor || true
+    docker stop app_3_tor || true
+    docker volume rm $(docker volume ls -q) || true
 fi
 
 cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
