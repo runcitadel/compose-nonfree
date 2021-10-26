@@ -2,5 +2,5 @@
     "version": "0.4.20",
     "name": "Citadel 0.4.20",
     "requires": ">=0.4.11",
-    "notes": "This update prepares your node further for the Citadel 0.5.0 update. The update is already finished, we're just preparing our new website and try to make existing nodes ready for updating."
+    "notes": "IMPORTANT: IF YOU HAVE BEEN TESTING THE NEW CITADEL OS ALREADY, DO NOT INSTALL THIS! This update prepares your node further for the Citadel 0.5.0 update. The update is already finished, we're just preparing our new website and try to make existing nodes ready for updating."
 }
