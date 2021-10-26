@@ -1,6 +1,6 @@
 {
-    "version": "0.4.13",
-    "name": "Citadel 0.4.13",
+    "version": "0.4.20",
+    "name": "Citadel 0.4.20",
     "requires": ">=0.4.11",
-    "notes": "In this update, we fixed a few more issues and made it easier for us to troubleshoot the remaining issues with you. We also prepared Citadel further for the upcoming 0.5.0 update and it's now possible to add 3rd party app repositories (Only manually via SSH right now)."
+    "notes": "This update prepares your node further for the Citadel 0.5.0 update. The update is already finished, we're just preparing our new website and try to make existing nodes ready for updating."
 }
