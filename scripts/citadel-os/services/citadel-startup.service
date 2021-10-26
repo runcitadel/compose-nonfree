@@ -1,6 +1,6 @@
-# SPDX-FileCopyrightText: 2020-2021 Umbrel. https://getumbrel.com
+# SPDX-FileCopyrightText: 2020 Umbrel. https://getumbrel.com
 #
-# SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+# SPDX-License-Identifier: AGPL-3.0-or-later
 
 # Citadel Startup Service
 # Installed at /etc/systemd/system/citadel-startup.service
@@ -28,9 +28,6 @@ ExecStart=/home/citadel/citadel/scripts/start
 ExecStop=/home/citadel/citadel/scripts/stop
 User=root
 Group=root
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=citadel startup
 RemainAfterExit=yes
 Restart=always
 RestartSec=10
