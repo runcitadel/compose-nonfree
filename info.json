@@ -1,6 +1,6 @@
 {
-    "version": "0.4.20",
-    "name": "Citadel 0.4.20",
-    "requires": ">=0.4.11",
-    "notes": "IMPORTANT: IF YOU HAVE BEEN TESTING THE NEW CITADEL OS ALREADY, DO NOT INSTALL THIS! This update prepares your node further for the Citadel 0.5.0 update. The update is already finished, we're just preparing our new website and try to make existing nodes ready for updating."
+    "version": "0.5.0",
+    "name": "Citadel 0.5.0",
+    "requires": ">=0.4.20",
+    "notes": "Important note: This update can not be installed directly through the dashboard. Instead, please first download the channels.backup, make sure you got your 24 words written down, then follow this guide here: https://forum.runcitadel.space/d/6-announcing-citadel-050-independence If you are not on a Raspberry Pi, please wait until instructions become available."
 }
