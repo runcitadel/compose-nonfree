@@ -1,6 +1,6 @@
 {
-    "version": "0.4.21",
-    "name": "Citadel 0.4.21",
+    "version": "0.4.22",
+    "name": "Citadel 0.4.22",
     "requires": ">=0.0.1",
-    "notes": "This update fixes a few migration issues."
+    "notes": "This update fixes more migration issues."
 }
