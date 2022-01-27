@@ -187,17 +187,17 @@
               }
             }
           },
-          "restarts": {
+          "restart": {
             "type": "string",
             "description": "When the container should restart. Can be 'always' or 'on-failure'."
           }
         },
-        "additionalProperties": false
+        "additionalProperties": true
       },
       "required": ["name", "image"],
-      "additionalProperties": false
+      "additionalProperties": true
     }
   },
   "required": ["metadata", "containers"],
-  "additionalProperties": false
+  "additionalProperties": true
 }
