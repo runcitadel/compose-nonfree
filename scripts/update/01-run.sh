@@ -34,8 +34,6 @@ if [[ -z "${UMBREL_OS:-}" ]] && [[ -n "${CITADEL_OS:-}" ]]; then
     IS_MIGRATING=1
     CITADEL_OS='0.0.1'
     rm -rf "${CITADEL_ROOT}/electrs/db"
-    sudo apt install python3-jsonschema
-    sudo pip3 install dacite
 fi
 
 # Make Umbrel OS specific updates
@@ -116,12 +114,12 @@ EOF
 
 # If apt is available, install python3-pip
 if command -v apt >/dev/null 2>&1; then
-  apt install -y python3-pip
+  apt install -y python3-pip python3-jsonschema python3-yaml
 fi
 
 # If pip3 is available, install pyyaml and jsonschema
 if command -v pip3 >/dev/null 2>&1; then
-  pip3 install pyyaml jsonschema
+  pip3 install dacite
 fi
 
 # Move Docker data dir to external storage now if this is an old install.
