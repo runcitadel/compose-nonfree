@@ -34,6 +34,7 @@ if [[ -z "${UMBREL_OS:-}" ]] && [[ -n "${CITADEL_OS:-}" ]]; then
     IS_MIGRATING=1
     CITADEL_OS='0.0.1'
     rm -rf "${CITADEL_ROOT}/electrs/db"
+    sudo pip3 install dacite
 fi
 
 # Make Umbrel OS specific updates
