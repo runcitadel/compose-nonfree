@@ -5,7 +5,7 @@
 import re
 
 # Helper functions
-# Return a list of env vars in a string, supports both $NAM§ and ${NAME} format for the env var
+# Return a list of env vars in a string, supports both $NAME and ${NAME} format for the env var
 # This can potentially be used to get around permissions, so this check is critical for security
 # Please report any security vulnerabilities you find in this check to aaron.dewes@protonmail.com
 def getEnvVars(string: str):
@@ -42,20 +42,58 @@ def parse_dotenv(file_path):
         exit(1)
   return envVars
 
-# Combines two objects
+# Combines an object and a class
 # If the key exists in both objects, the value of the second object is used
 # If the key does not exist in the first object, the value from the second object is used
 # If a key contains a list, the second object's list is appended to the first object's list
 # If a key contains another object, these objects are combined
-def combineObjects(obj1: dict, obj2: dict):
-    for key in obj2:
-        if key in obj1:
-            if isinstance(obj1[key], list):
-                obj1[key] = obj1[key] + obj2[key]
-            elif isinstance(obj1[key], dict):
-                obj1[key] = combineObjects(obj1[key], obj2[key])
-            else:
-                obj1[key] = obj2[key]
+def combineObjectAndClass(theClass, obj: dict):
+  for key, value in obj.items():
+    if key in theClass.__dict__:
+      if isinstance(value, list):
+        if isinstance(theClass.__dict__[key], list):
+          theClass.__dict__[key].extend(value)
         else:
-            obj1[key] = obj2[key]
-    return obj1
+          theClass.__dict__[key] = [theClass.__dict__[key]] + value
+      elif isinstance(value, dict):
+        if isinstance(theClass.__dict__[key], dict):
+          theClass.__dict__[key].update(value)
+        else:
+          theClass.__dict__[key] = {theClass.__dict__[key]: value}
+      else:
+        theClass.__dict__[key] = value
+    else:
+      theClass.__dict__[key] = value
+
+def is_builtin_type(obj):
+  return isinstance(obj, (int, float, str, bool, list, dict))
+
+# Convert a class to a dict
+# Also strip any class member which is null or empty
+def classToDict(theClass):
+  obj: dict = {}
+  for key, value in theClass.__dict__.items():
+    if value is None or (isinstance(value, list) and len(value) == 0):
+      continue
+    if isinstance(value, list):
+      newList = []
+      for element in value:
+        if is_builtin_type(element):
+          newList.append(element)
+        else:
+          newList.append(classToDict(element))
+        obj[key] = newList
+    elif isinstance(value, dict):
+      newDict = {}
+      for subkey, subvalue in value.items():
+        if is_builtin_type(subvalue):
+          newDict[subkey] = subvalue
+        else:
+          newDict[subkey] = classToDict(subvalue)
+      obj[key] = newDict
+    elif is_builtin_type(value):
+      obj[key] = value
+    else:
+      obj[key] = classToDict(value)
+  return obj
+  

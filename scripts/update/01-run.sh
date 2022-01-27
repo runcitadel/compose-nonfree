@@ -75,6 +75,9 @@ cat <<EOF > "$CITADEL_ROOT"/statuses/update-status.json
 {"state": "installing", "progress": 33, "description": "Configuring settings", "updateTo": "$RELEASE"}
 EOF
 
+# Help migration from earlier versions
+mv "$CITADEL_ROOT/db/umbrel-seed" "$CITADEL_ROOT/db/citadel-seed" || true
+
 # Checkout to the new release
 cd "$CITADEL_ROOT"/.citadel-"$RELEASE"
 

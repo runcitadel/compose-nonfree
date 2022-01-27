@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 
 import json
-from lib.manage import createDataDir, deleteData, download, getUserData, runCompose, setInstalled, setRemoved, startInstalled, stopInstalled, update, deriveEntropy, updateRepos
+from lib.manage import compose, createDataDir, deleteData, getUserData, setInstalled, setRemoved, startInstalled, stopInstalled, update, deriveEntropy, updateRepos
 from lib.validate import findAndValidateApps
 import os
 import argparse
@@ -49,32 +49,32 @@ elif args.action == 'download':
     updateRepos()
     exit(0)
 elif args.action == 'update':
-    if(args.invoked_by_configure):
+    if args.invoked_by_configure:
         update(args.app)
     else:
         os.system(os.path.join(nodeRoot, "scripts", "configure"))
         os.chdir(nodeRoot)
-        os.system("docker compose stop app_tor")
-        os.system("docker compose start app_tor")
-        os.system("docker compose stop app_2_tor")
-        os.system("docker compose start app_2_tor")
-        os.system("docker compose stop app_3_tor")
-        os.system("docker compose start app_3_tor")
+        os.system("docker compose stop app-tor")
+        os.system("docker compose start app-tor")
+        os.system("docker compose stop app-2-tor")
+        os.system("docker compose start app-2-tor")
+        os.system("docker compose stop app-3-tor")
+        os.system("docker compose start app-3-tor")
     exit(0)
 elif args.action == 'update-online':
     updateRepos()
     print("Downloaded all updates")
-    if(args.invoked_by_configure):
+    if args.invoked_by_configure:
         update(args.app)
     else:
         os.system(os.path.join(nodeRoot, "scripts", "configure"))
         os.chdir(nodeRoot)
-        os.system("docker compose stop app_tor")
-        os.system("docker compose start app_tor")
-        os.system("docker compose stop app_2_tor")
-        os.system("docker compose start app_2_tor")
-        os.system("docker compose stop app_3_tor")
-        os.system("docker compose start app_3_tor")
+        os.system("docker compose stop app-tor")
+        os.system("docker compose start app-tor")
+        os.system("docker compose stop app-2-tor")
+        os.system("docker compose start app-2-tor")
+        os.system("docker compose stop app-3-tor")
+        os.system("docker compose start app-3-tor")
     exit(0)
 elif args.action == 'ls-installed':
     # Load the userFile as JSON, check if installedApps is in it, and if so, print the apps
@@ -90,8 +90,8 @@ elif args.action == 'install':
         print("No app provided")
         exit(1)
     createDataDir(args.app)
-    runCompose(args.app, "pull")
-    runCompose(args.app, "up --detach")
+    compose(args.app, "pull")
+    compose(args.app, "up --detach")
     setInstalled(args.app)
 elif args.action == 'uninstall':
     if not args.app:
@@ -102,7 +102,7 @@ elif args.action == 'uninstall':
         print("App {} is not installed".format(args.app))
         exit(1)
     print("Stopping app {}...".format(args.app))
-    runCompose(args.app, "rm --force --stop")
+    compose(args.app, "rm --force --stop")
     print("Deleting data...")
     deleteData(args.app)
     print("Removing from the list of installed apps...")
@@ -112,19 +112,19 @@ elif args.action == 'stop':
         print("No app provided")
         exit(1)
     userData = getUserData()
-    if(args.app == "installed"):
+    if args.app == "installed":
         if "installedApps" in userData:
             stopInstalled()
         exit(0)
     print("Stopping app {}...".format(args.app))
-    runCompose(args.app, "rm --force --stop")
+    compose(args.app, "rm --force --stop")
 elif args.action == 'start':
     if not args.app:
         print("No app provided")
         exit(1)
 
     userData = getUserData()
-    if(args.app == "installed"):
+    if args.app == "installed":
         if "installedApps" in userData:
             startInstalled()
         exit(0)
@@ -132,32 +132,32 @@ elif args.action == 'start':
     if not "installedApps" in userData or args.app not in userData["installedApps"]:
         print("App {} is not yet installed".format(args.app))
         exit(1)
-    runCompose(args.app, "up --detach")
+    compose(args.app, "up --detach")
 
 elif args.action == 'restart':
     if not args.app:
         print("No app provided")
         exit(1)
-    if(args.app == "installed"):
+    if args.app == "installed":
         stopInstalled()
         startInstalled()
         exit(0)
-    
+
     userData = getUserData()
     if not "installedApps" in userData or args.app not in userData["installedApps"]:
         print("App {} is not yet installed".format(args.app))
         exit(1)
-    runCompose(args.app, "rm --force --stop")
-    runCompose(args.app, "up --detach")
+    compose(args.app, "rm --force --stop")
+    compose(args.app, "up --detach")
 
 elif args.action == 'compose':
     if not args.app:
         print("No app provided")
         exit(1)
-    runCompose(args.app, " ".join(args.other))
+    compose(args.app, " ".join(args.other))
 
 elif args.action == "entropy":
-    if(args.app == ""):
+    if args.app == "":
         print("Missing identifier for entropy")
         exit(1)
     print(deriveEntropy(args.app))

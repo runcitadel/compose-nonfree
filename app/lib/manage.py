@@ -4,6 +4,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+
 import stat
 import tempfile
 import threading
@@ -16,11 +17,9 @@ import json
 import yaml
 import subprocess
 
-from lib.composegenerator.v0.generate import createComposeConfigFromV0
 from lib.composegenerator.v1.generate import createComposeConfigFromV1
-from lib.appymlgenerator import convertComposeYMLToAppYML
 from lib.validate import findAndValidateApps
-from lib.metadata import getAppRegistry, getSimpleAppRegistry
+from lib.metadata import getAppRegistry
 from lib.entropy import deriveEntropy
 
 # For an array of threads, join them and wait for them to finish
@@ -41,10 +40,6 @@ appDataDir = os.path.join(nodeRoot, "app-data")
 userFile = os.path.join(nodeRoot, "db", "user.json")
 legacyScript = os.path.join(nodeRoot, "scripts", "app")
 
-
-def runCompose(app: str, args: str):
-    compose(app, args)
-
 # Returns a list of every argument after the second one in sys.argv joined into a string by spaces
 
 
@@ -56,7 +51,7 @@ def getArguments():
 
 
 def getAppYml(name):
-    url = 'https://raw.githubusercontent.com/runcitadel/compose-nonfree/main/apps/' + \
+    url = 'https://raw.githubusercontent.com/runcitadel/core/main/apps/' + \
         name + '/' + 'app.yml'
     response = requests.get(url)
     if response.status_code == 200:
@@ -69,22 +64,6 @@ def getAppYmlPath(app):
     return os.path.join(appsDir, app, 'app.yml')
 
 
-def composeToAppYml(app):
-    composeFile = os.path.join(appsDir, app, "docker-compose.yml")
-    appYml = os.path.join(appsDir, app, "app.yml")
-    # Read the compose file and parse it
-    with open(composeFile, "r") as f:
-        compose = yaml.safe_load(f)
-    registry = os.path.join(appsDir, "registry.json")
-    # Load the registry
-    with open(registry, "r") as f:
-        registryData = json.load(f)
-    converted = convertComposeYMLToAppYML(compose, app, registryData)
-    # Put converted into the app.yml after encoding it as YAML
-    with open(appYml, "w") as f:
-        f.write(yaml.dump(converted, sort_keys=False))
-
-
 def update(verbose: bool = False):
     apps = findAndValidateApps(appsDir)
     # The compose generation process updates the registry, so we need to get it set up with the basics before that
@@ -93,18 +72,13 @@ def update(verbose: bool = False):
         json.dump(registry, f, indent=4, sort_keys=True)
     print("Wrote registry to registry.json")
 
-    simpleRegistry = getSimpleAppRegistry(apps, appsDir)
-    with open(os.path.join(appSystemDir, "apps.json"), "w") as f:
-        json.dump(simpleRegistry, f, indent=4, sort_keys=True)
-    print("Wrote version information to apps.json")
-
     # Loop through the apps and generate valid compose files from them, then put these into the app dir
     for app in apps:
         composeFile = os.path.join(appsDir, app, "docker-compose.yml")
         appYml = os.path.join(appsDir, app, "app.yml")
         with open(composeFile, "w") as f:
             appCompose = getApp(appYml, app)
-            if(appCompose):
+            if appCompose:
                 f.write(yaml.dump(appCompose, sort_keys=False))
                 if verbose:
                     print("Wrote " + app + " to " + composeFile)
@@ -112,7 +86,7 @@ def update(verbose: bool = False):
 
 
 def download(app: str = None):
-    if(app is None):
+    if app is None:
         apps = findAndValidateApps(appsDir)
         for app in apps:
             data = getAppYml(app)
@@ -144,14 +118,15 @@ def startInstalled():
     if os.path.isfile(userFile):
         with open(userFile, "r") as f:
             userData = json.load(f)
-    threads = []
+    #threads = []
     for app in userData["installedApps"]:
         print("Starting app {}...".format(app))
-        # Run runCompose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
-        thread = threading.Thread(target=runCompose, args=(app, "up --detach"))
-        thread.start()
-        threads.append(thread)
-    joinThreads(threads)
+        # Run compose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
+        #thread = threading.Thread(target=compose, args=(app, "up --detach"))
+        #thread.start()
+        #threads.append(thread)
+        compose(app, "up --detach")
+    #joinThreads(threads)
 
 
 def stopInstalled():
@@ -163,9 +138,9 @@ def stopInstalled():
     threads = []
     for app in userData["installedApps"]:
         print("Stopping app {}...".format(app))
-        # Run runCompose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
+        # Run compose(args.app, "up --detach") asynchrounously for all apps, then exit(0) when all are finished
         thread = threading.Thread(
-            target=runCompose, args=(app, "rm --force --stop"))
+            target=compose, args=(app, "rm --force --stop"))
         thread.start()
         threads.append(thread)
     joinThreads(threads)
@@ -181,10 +156,10 @@ def getApp(appFile: str, appId: str):
         raise Exception("Error: Could not find metadata in " + appFile)
     app["metadata"]["id"] = appId
 
-    if('version' in app and str(app['version']) == "1"):
+    if 'version' in app and str(app['version']) == "1":
         return createComposeConfigFromV1(app, nodeRoot)
     else:
-        return createComposeConfigFromV0(app)
+        raise Exception("Error: Unsupported version of app.yml")
 
 
 def compose(app, arguments):
@@ -193,14 +168,23 @@ def compose(app, arguments):
     composeFile = os.path.join(appsDir, app, "docker-compose.yml")
     commonComposeFile = os.path.join(appSystemDir, "docker-compose.common.yml")
     os.environ["APP_DOMAIN"] = subprocess.check_output(
-        "hostname -s 2>/dev/null || echo 'umbrel'", shell=True).decode("utf-8") + ".local"
+        "hostname -s 2>/dev/null || echo 'citadel'", shell=True).decode("utf-8") + ".local"
     os.environ["APP_HIDDEN_SERVICE"] = subprocess.check_output("cat {} 2>/dev/null || echo 'notyetset.onion'".format(
-        os.path.join(nodeRoot, "tor", "data", "app-{}/hostname".format(app))), shell=True).decode("utf-8")
+        os.path.join(nodeRoot, "tor", "data", "app-{}/hostname".format(app))), shell=True).decode("utf-8").strip()
     os.environ["APP_SEED"] = deriveEntropy("app-{}-seed".format(app))
     # Allow more app seeds, with random numbers from 1-5 assigned in a loop
     for i in range(1, 6):
         os.environ["APP_SEED_{}".format(i)] = deriveEntropy("app-{}-seed{}".format(app, i))
     os.environ["APP_DATA_DIR"] = os.path.join(appDataDir, app)
+    # Chown and chmod dataDir to have the owner 1000:1000 and the same permissions as appDir
+    subprocess.call("chown -R 1000:1000 {}".format(os.path.join(appDataDir, app)), shell=True)
+    try:
+        os.chmod(os.path.join(appDataDir, app), os.stat(os.path.join(appsDir, app)).st_mode)
+    except Exception:
+        pass
+    if app == "nextcloud":
+        subprocess.call("chown -R 33:33 {}".format(os.path.join(appDataDir, app, "data", "nextcloud")), shell=True)
+        subprocess.call("chmod -R 770 {}".format(os.path.join(appDataDir, app, "data", "nextcloud")), shell=True)
     os.environ["BITCOIN_DATA_DIR"] = os.path.join(nodeRoot, "bitcoin")
     os.environ["LND_DATA_DIR"] = os.path.join(nodeRoot, "lnd")
     # List all hidden services for an app and put their hostname in the environment
@@ -209,7 +193,7 @@ def compose(app, arguments):
         appHiddenServiceFile = os.path.join(
             nodeRoot, "tor", "data", "app-{}-{}/hostname".format(app, service))
         os.environ["APP_HIDDEN_SERVICE_{}".format(service.upper().replace("-", "_"))] = subprocess.check_output("cat {} 2>/dev/null || echo 'notyetset.onion'".format(
-            appHiddenServiceFile), shell=True).decode("utf-8")
+            appHiddenServiceFile), shell=True).decode("utf-8").strip()
 
     if not os.path.isfile(composeFile):
         print("Error: Could not find docker-compose.yml in " + app)
@@ -237,11 +221,11 @@ def createDataDir(app: str):
     appDir = os.path.join(appsDir, app)
     if os.path.isdir(dataDir):
         deleteData(app)
-    # Recursively copy everything from appDir to dataDir while excluding .gitignore
+    # Recursively copy everything from appDir to dataDir while excluding .gitkeep files
     shutil.copytree(appDir, dataDir, symlinks=False,
-                    ignore=shutil.ignore_patterns(".gitignore"))
-    # Chown and chmod dataDir to have the same owner and permissions as appDir
-    os.chown(dataDir, os.stat(appDir).st_uid, os.stat(appDir).st_gid)
+                    ignore=shutil.ignore_patterns(".gitkeep"))
+    # Chown and chmod dataDir to have the owner 1000:1000 and the same permissions as appDir
+    subprocess.call("chown -R 1000:1000 {}".format(os.path.join(appDataDir, app)), shell=True)
     os.chmod(dataDir, os.stat(appDir).st_mode)
 
 
@@ -294,6 +278,9 @@ def updateRepos():
         repo = repo.strip()
         if repo == "":
             continue
+        # Also ignore comments
+        if repo.startswith("#"):
+            continue
         # Split the repo into the git url and the branch
         repo = repo.split(" ")
         if len(repo) != 2:
@@ -306,7 +293,7 @@ def updateRepos():
         print("Cloning the repository")
         # Git clone with a depth of 1 to avoid cloning the entire repo
         # Dont print anything to stdout, as we don't want to see the git clone output
-        subprocess.run("git clone --depth 1 {} {}".format(gitUrl, tempDir), shell=True, stdout=subprocess.DEVNULL)
+        subprocess.run("git clone --depth 1 --branch {} {} {}".format(branch, gitUrl, tempDir), shell=True, stdout=subprocess.DEVNULL)
         # Overwrite the current app dir with the contents of the temporary dir/apps/app
         for app in os.listdir(os.path.join(tempDir, "apps")):
             # if the app is already installed, don't overwrite it

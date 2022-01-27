@@ -5,20 +5,17 @@
 import os
 import yaml
 from jsonschema import validate
-import json
+import yaml
 
 
 # Validates app data
 # Returns true if valid, false otherwise
 scriptDir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 def validateApp(app: dict):
-    with open(os.path.join(scriptDir, 'app-standard.json'), 'r') as f:
-        schemaVersion0 = json.loads(f.read())
-    # The new standard
-    with open(os.path.join(scriptDir, 'app-standard-v1.json'), 'r') as f:
-        schemaVersion1 = json.loads(f.read())
+    with open(os.path.join(scriptDir, 'app-standard-v1.yml'), 'r') as f:
+        schemaVersion1 = yaml.safe_load(f)
 
-    if('version' in app and str(app['version']) == "1"):
+    if 'version' in app and str(app['version']) == "1":
         try:
             validate(app, schemaVersion1)
             return True
@@ -27,13 +24,8 @@ def validateApp(app: dict):
             print(e)
             return False
     else:
-        try:
-            validate(app, schemaVersion0)
-            return True
-        # Catch and log any errors, and return false
-        except Exception as e:
-            print(e)
-            return False
+        print("Unsupported app version")
+        return False
 
 
 # Read in an app.yml file and pass it to the validation function
